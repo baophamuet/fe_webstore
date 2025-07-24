@@ -1,5 +1,8 @@
 import logo from '../assets/logo.svg';
+import { ToastContainer } from 'react-toastify';
 import './App.scss';
+import Mycomponent from './example/Mycomponent';
+import Login from './example/loginComponent';
 
 function App() {
   return (
@@ -9,8 +12,19 @@ function App() {
         <p>
           Hello world!!!
         </p>
-        
+        <Mycomponent></Mycomponent>
       </header>
+      <Login></Login>
+      <ToastContainer 
+        position="top-right"
+        autoClose={500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
+
     </div>
   );
 }
