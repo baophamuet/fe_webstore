@@ -1,10 +1,12 @@
 import { render } from "@testing-library/react";
 import React, { useEffect, useState } from "react";
-
+import ProductCard from "../components/ProductCard";
+import { useAuth } from "./AuthContext";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
-
+  ///const { user } = useAuth(); 
+  
   useEffect(() => {
     // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
@@ -31,9 +33,7 @@ export default function Home() {
   return (
     <div className="px-8 py-6">
     <h1>Hello from Home </h1>
-    <div products={products} 
-    
-    ></div>
+    <ProductCard></ProductCard>
     </div>
   );
 }

@@ -1,24 +1,33 @@
-import React, { Component } from 'react';
-import '../../styles/Login.scss';
-import { toast,ToastContainer } from 'react-toastify';
+import React, { useState } from 'react';
+import '../styles/Login.scss';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from './AuthContext';
+import { FaSignOutAlt } from 'react-icons/fa';
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: '',
-      message: ''
-    };
-  }
 
-  handleChangeLogin = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
-  handleSubmitLogin = async (e) => {
+function Login() {
+  const { login,logout } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+  const userLogin= JSON.parse(localStorage.getItem('user'))
+  const handleChangeLogin = (e) => {
+    const { name, value } = e.target;
+    if (name === 'username') setUsername(value);
+    if (name === 'password') setPassword(value);
+  };
+  const handleChangeLogout = (e) =>{
     e.preventDefault();
-    const { username, password } = this.state;
+    try {
+      logout()
+    }catch(e) {
+      console.error('Login error:', e);
+    }
+  }
+  const handleSubmitLogin = async (e) => {
+    e.preventDefault();
 
     try {
       const response = await fetch('http://localhost:8080/login', {
@@ -30,63 +39,97 @@ class Login extends Component {
       });
 
       const data = await response.json();
-      console.log(">>>>>>> check data:  ",data)
+      console.log(">>>>>>> check data:  ", data);
       if (data.status) {
-        this.setState({ message: '✅ Đăng nhập thành công!' });
-        toast.success("Đăng nhập thành công!")
-        // Gợi ý: Lưu token để sử dụng sau
+        setMessage('✅ Đăng nhập thành công!');
+        await toast.success("Đăng nhập thành công!");
         localStorage.setItem('token', data.token);
+        //console.log(">>>>>>> check data.user:  ", data);
+        login({ username, password })
+        console.log(">>>>>>> check data.user1:  ", { username, password });
+         console.log(">>>>>>> check data.user2:  ", JSON.parse(localStorage.getItem('user')));
+
+        setTimeout(() => {
+          navigate('/home');
+        }, 100);
       } else {
-        this.setState({ message:  data.message });
-        toast.error("Sai tài khoản/mật khẩu!")
+        setMessage(data.message);
+        toast.error("Sai tài khoản/mật khẩu!");
       }
     } catch (error) {
-      this.setState({ message: 'Lỗi kết nối đến server!' });
+      setMessage('Lỗi kết nối đến server!');
       console.error('Login error:', error);
-      toast.error("Không thể đăng nhập!")
+      toast.error("Không thể đăng nhập!");
     }
-  }
-
-  render() {
-    const { username, password, message } = this.state;
-
-    return (
-      <div className="login-container">
-        <h2>Đăng nhập</h2>
-        <form onSubmit={this.handleSubmitLogin}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Tài khoản"
-            value={username}
-            onChange={this.handleChangeLogin}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu"
-            value={password}
-            onChange={this.handleChangeLogin}
-            required
-          />
-          <button type="submit">Đăng nhập</button>
-        </form>
-        {message && <p className="message">{message}</p>}
-        <ToastContainer
-          position="top-right"
-          autoClose={500}
-          hideProgressBar={false}
-          closeButton={false} 
-          closeOnClick
-          pauseOnHover
-          draggable
-          theme="light"
+  };
+  if (!userLogin)
+  return (
+    <div className="login-container">
+      <h2>Đăng nhập</h2>
+      <form onSubmit={handleSubmitLogin}>
+        <input
+          type="text"
+          name="username"
+          placeholder="Tài khoản"
+          value={username}
+          onChange={handleChangeLogin}
+          required
         />
-
+        <input
+          type="password"
+          name="password"
+          placeholder="Mật khẩu"
+          value={password}
+          onChange={handleChangeLogin}
+          required
+        />
+        <button type="submit">Đăng nhập</button>
+      </form>
+      {message && <p className="message">{message}</p>}
+      <ToastContainer
+        position="top-right"
+        autoClose={500}
+        hideProgressBar={false}
+        closeButton={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
+    </div>
+  );
+  else return (
+     <div className="account-page">
+      <h1 className="title">Tài khoản</h1>
+      <div className="account-container">
+        <div className="account-section">
+          <h2>Thông tin tài khoản</h2>
+          <hr />
+          <p>Điểm Tích lũy của bạn: <strong>15</strong></p>
+          <p>Cấp độ khách hàng: <strong>SILVER</strong></p>
+          <p>Thay đổi thông tin tài khoản</p>
+          <p>Thay đổi mật khẩu</p>
+          <p className="logout" onClick={handleChangeLogout}><FaSignOutAlt /> Đăng xuất</p>
+        </div>
+        <div className="account-section">
+          <h2>Sản phẩm yêu thích</h2>
+          <hr />
+          <p>Sản phẩm yêu thích</p>
+          <p>Lịch sử order</p>
+        </div>
       </div>
-    );
-  }
+      <ToastContainer
+        position="top-right"
+        autoClose={500}
+        hideProgressBar={false}
+        closeButton={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
+    </div>
+  )
 }
 
-export default Login
+export default Login;

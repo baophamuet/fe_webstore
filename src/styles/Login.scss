@@ -44,3 +44,66 @@
     color: red;
   }
 }
+.account-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+
+  .title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    color: #2f3b52;
+  }
+
+  .account-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+
+    .account-section {
+      flex: 1;
+
+      h2 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid #999;
+        margin-bottom: 15px;
+      }
+
+      p {
+        margin: 10px 0;
+        font-size: 16px;
+        cursor: pointer;
+
+        strong {
+          font-weight: bold;
+        }
+
+        &:hover {
+          color: #0077cc;
+        }
+      }
+
+      .logout {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #000;
+
+        &:hover {
+          color: #e60000;
+        }
+      }
+    }
+  }
+}
+
