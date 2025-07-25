@@ -2,19 +2,31 @@ import logo from '../assets/logo.svg';
 import { ToastContainer } from 'react-toastify';
 import './App.scss';
 import Mycomponent from './example/Mycomponent';
-import Login from './example/loginComponent';
+import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
+import ProductCard from '../components/ProductCard';
+import Home from '../routes/Home';
+import Nav from '../components/navbar';
+
 
 function App() {
   return (
-    <div className="App">
+    <BrowserRouter>
+      <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <Nav></Nav>
+        
+        <Routes>
+          <Route path='/about' >          </Route>
+          <Route path='/'  element={<Mycomponent />}></Route>
+          <Route path='/home' element={<Home />}></Route>
+          <Route path='/contact' >          </Route>
+          <Route path='/news' element={<ProductCard />}>          </Route>
+        </Routes>
         <p>
           Hello world!!!
         </p>
-        <Mycomponent></Mycomponent>
+        
       </header>
-      <Login></Login>
       <ToastContainer 
         position="top-right"
         autoClose={500}
@@ -26,6 +38,7 @@ function App() {
       />
 
     </div>
+    </BrowserRouter>
   );
 }
 
