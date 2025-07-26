@@ -4,6 +4,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from './AuthContext';
 import { FaSignOutAlt } from 'react-icons/fa';
+import Admin from './Admin';
+import UserProfile from '../components/UserProfile';
 
 
 function Login() {
@@ -41,17 +43,21 @@ function Login() {
       const data = await response.json();
       console.log(">>>>>>> check data:  ", data);
       if (data.status) {
-        setMessage('✅ Đăng nhập thành công!');
-        await toast.success("Đăng nhập thành công!");
+        //setMessage('✅ Đăng nhập thành công!');
         localStorage.setItem('token', data.token);
+        let role = data.status.role
+        let id  = data.status.id
         //console.log(">>>>>>> check data.user:  ", data);
-        login({ username, password })
+        login({username,role,id})
         console.log(">>>>>>> check data.user1:  ", { username, password });
          console.log(">>>>>>> check data.user2:  ", JSON.parse(localStorage.getItem('user')));
-
-        setTimeout(() => {
+        if (role!='admin'){
+          setTimeout(() => {
           navigate('/home');
         }, 100);
+        }
+        toast.success("Đăng nhập thành công!");
+
       } else {
         setMessage(data.message);
         toast.error("Sai tài khoản/mật khẩu!");
@@ -98,6 +104,11 @@ function Login() {
       />
     </div>
   );
+  else if (userLogin.role=='admin') {
+    return (
+      <Admin></Admin>
+    )
+  }
   else return (
      <div className="account-page">
       <h1 className="title">Tài khoản</h1>
@@ -105,16 +116,13 @@ function Login() {
         <div className="account-section">
           <h2>Thông tin tài khoản</h2>
           <hr />
-          <p>Điểm Tích lũy của bạn: <strong>15</strong></p>
-          <p>Cấp độ khách hàng: <strong>SILVER</strong></p>
-          <p>Thay đổi thông tin tài khoản</p>
-          <p>Thay đổi mật khẩu</p>
-          <p className="logout" onClick={handleChangeLogout}><FaSignOutAlt /> Đăng xuất</p>
+          <UserProfile></UserProfile>
+
         </div>
         <div className="account-section">
           <h2>Sản phẩm yêu thích</h2>
           <hr />
-          <p>Sản phẩm yêu thích</p>
+          <p className='account-section-tym'>Sản phẩm yêu thích</p>
           <p>Lịch sử order</p>
         </div>
       </div>

@@ -1,0 +1,96 @@
+// ----- Layout -----
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.admin-sidebar {
+  width: 220px;
+  background: #ffffff;
+  border-right: 1px solid #dee2e6;
+  padding: 25px 15px;
+
+  .brand {
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #5d2b8d;
+  }
+
+  .menu {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 18px 0;
+
+      a {
+        color: #5d2b8d;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.admin-main {
+  flex: 1;
+  padding: 25px 35px;
+}
+
+// ----- Header -----
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+
+  h2 {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .quick {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+}
+
+// ----- Statistic cards -----
+.stat-card {
+  text-align: center;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  .icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .value {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .label {
+    margin: 4px 0 2px;
+    font-size: 0.95rem;
+  }
+}
+
+// ----- Chart placeholder -----
+.chart-placeholder {
+  height: 240px;
+  border: 1px dashed #ced4da;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  font-size: 0.9rem;
+}

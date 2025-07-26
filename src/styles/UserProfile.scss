@@ -1,0 +1,59 @@
+.user-profile {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  color: #333; // ✅ màu chữ chính tối để dễ đọc
+
+  .avatar-section {
+    margin-bottom: 20px;
+
+    .avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    h2 {
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    p {
+      font-size: 14px;
+      color: #777;
+    }
+  }
+
+  .info-section {
+    text-align: left;
+    margin-top: 10px;
+
+    p {
+      font-size: 15px;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      color: #333; // ✅ đảm bảo màu chữ tối
+
+      strong {
+        display: inline-block;
+        width: 80px;
+        color: #555; // ✅ nhấn mạnh nhãn field nhưng vẫn dễ đọc
+      }
+    }
+  }
+}

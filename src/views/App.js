@@ -1,4 +1,3 @@
-import logo from '../assets/logo.svg';
 import { ToastContainer } from 'react-toastify';
 import './App.scss';
 import Mycomponent from './example/Mycomponent';
@@ -8,10 +7,12 @@ import Login from '../routes/Login';
 import Home from '../routes/Home';
 import Nav from '../components/navbar';
 import { AuthProvider } from '../routes/AuthContext';
+import UserProfile from '../components/UserProfile';
 
 function App() {
   return (
     <AuthProvider>
+      
       <BrowserRouter>
         <div className="App">
           <header className="App-header">
@@ -19,8 +20,14 @@ function App() {
             <Routes>
               <Route path="/" element={<Mycomponent />} />
               <Route path="/home" element={<Home />} />
-              <Route path="/contact" element={<div>Contact Page Coming Soon</div>} />
+              <Route path="/helps" element={<div>Contact Page Coming Soon</div>} />
               <Route path="/login" element={<Login />} />
+              <Route path="/login/dashboard" element={<Login />} />
+              <Route path="/login/listusers" element={<Login />} />
+              <Route path="/login/user" excact element={<></>} />
+              <Route path="/login/users/:id" element={<UserProfile />} />
+              
+              
             </Routes>
           </header>
           <ToastContainer 

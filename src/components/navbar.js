@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/Nav.scss"
-import logo from "../assets/logo.svg"
+import logo from "../assets/images/logo.svg"
 import { NavLink, NavNavLink} from "react-router-dom";
 import { FaSearch, FaUser, FaHeart, FaShoppingCart } from 'react-icons/fa';
 
@@ -9,8 +9,9 @@ class Nav extends React.Component{
         return (
             <>
       <div className="topnav">
+      <img src={logo} className="App-logo" alt="logo" />
       <NavLink  className="logo" to="/home">SHOPPINK</NavLink>
-
+      
       <div className="search-bar">
         <FaSearch className="search-icon" />
         <input type="text" placeholder="Tìm kiếm" />
@@ -24,7 +25,7 @@ class Nav extends React.Component{
         <FaShoppingCart className="icon" />
       </div>
     </div>
-            <img src={logo} className="App-logo" alt="logo" />
+            
             </>
         )
     }

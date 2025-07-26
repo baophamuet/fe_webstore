@@ -2,6 +2,7 @@ import React from "react";
 import "../styles/ProductCard.scss";
 
 export default function ProductCard() {
+  
   return (
     <div className="product-card">
       {/* Ảnh sản phẩm */}
