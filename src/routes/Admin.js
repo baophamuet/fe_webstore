@@ -29,7 +29,7 @@ export default function Admin() {
           <li className="nav-item"><a className="nav-link text-white" href="#">Charts</a></li>
           <li className="nav-item"><a className="nav-link text-white"  
           href={ (user) ? `/login/users/${user.id}` :`/login/user/`}>Account</a></li>
-          <li className="nav-item"><a className="nav-link text-white" href="/login/listusers">List Users</a></li>
+          <li className="nav-item"><a className="nav-link text-white" href="/login/users">List Users</a></li>
           <li className="nav-item"><a className="nav-link text-white" href="#">Settings</a></li>
           <p className="logout" onClick={handleChangeLogout}><FaSignOutAlt /> Đăng xuất</p>
         </ul>
@@ -38,7 +38,7 @@ export default function Admin() {
       {/* Main content */}
       <div className="flex-grow-1 p-4" style={{ backgroundColor: "#f0f2f5" }}>
         <h2 className="mb-4">Dashboard</h2>
-        
+
         <Dashboard></Dashboard>
 
       </div>

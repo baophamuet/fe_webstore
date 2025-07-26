@@ -8,6 +8,7 @@ import Home from '../routes/Home';
 import Nav from '../components/navbar';
 import { AuthProvider } from '../routes/AuthContext';
 import UserProfile from '../components/UserProfile';
+import ListUsers from '../components/admin/ListUsers';
 
 function App() {
   return (
@@ -23,8 +24,7 @@ function App() {
               <Route path="/helps" element={<div>Contact Page Coming Soon</div>} />
               <Route path="/login" element={<Login />} />
               <Route path="/login/dashboard" element={<Login />} />
-              <Route path="/login/listusers" element={<Login />} />
-              <Route path="/login/user" excact element={<></>} />
+              <Route path="/login/users" excact element={<ListUsers/>} />
               <Route path="/login/users/:id" element={<UserProfile />} />
               
               

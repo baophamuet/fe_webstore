@@ -1,0 +1,72 @@
+.user-table-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  overflow-x: auto;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  table-layout: fixed; // ⚠️ Thêm dòng này để cột chia đều
+
+  thead {
+    background-color: #f0f0f0;
+
+    th {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        color: #444;
+        vertical-align: middle; // ⚠️ Căn giữa dọc cho đẹp
+        word-wrap: break-word; 
+        font-size: clamp(0.5rem, 1.2vw, 2rem); 
+    }
+
+  }
+
+  tbody {
+    tr {
+      &:hover {
+        background-color: #fafafa;
+      }
+
+      td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        color: #444;
+        vertical-align: middle; // ⚠️ Căn giữa dọc cho đẹp
+        word-wrap: break-word;  // ⚠️ Ngắt dòng nếu dài
+        font-size: clamp(0.5rem, 1.2vw, 2rem); 
+
+      }
+
+      .avatar-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .avatar {
+          width: 60px; // ⚠️ Giảm kích thước avatar
+          height: 60px;
+          border-radius: 50%;
+          object-fit: cover;
+          box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+      }
+
+      .empty-msg {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+        padding: 20px;
+      }
+    }
+  }
+}
