@@ -28,6 +28,9 @@ function Login() {
       console.error('Login error:', e);
     }
   }
+  const handleClickRegister = () =>{
+    navigate('/register')
+  }
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
 
@@ -90,7 +93,11 @@ function Login() {
           required
         />
         <button type="submit">Đăng nhập</button>
+        
       </form>
+      <hr></hr>
+      <button  type="submit" onClick={()=>{handleClickRegister()}}
+      >Đăng ký</button>
       {message && <p className="message">{message}</p>}
       <ToastContainer
         position="top-right"
