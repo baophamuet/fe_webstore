@@ -13,7 +13,7 @@ const ListUsers = () => {
       const fetchProfile = async () => {
         if (!user) return; 
         try {
-          const response = await fetch(`http://localhost:8080/users/`, {
+          const response = await fetch(`http://baophamuet.site:8080/users/`, {
             method: "GET", // hoặc không cần ghi vì GET là mặc định
             headers: {
               "Content-Type": "application/json"

@@ -1,4 +1,3 @@
-import { render } from "@testing-library/react";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
@@ -11,7 +10,7 @@ export default function Home() {
     // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:8080/products", {
+        const response = await fetch("http://baophamuet.site:8080/products", {
           method: "GET", // hoặc không cần ghi vì GET là mặc định
           headers: {
             "Content-Type": "application/json"

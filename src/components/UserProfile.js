@@ -28,7 +28,7 @@ const UserProfile = () => {
       const fetchProfile = async () => {
         if (!user) return; 
         try {
-          const response = await fetch(`http://localhost:8080/users/${user.id}`, {
+          const response = await fetch(`http://baophamuet.site:8080/users/${user.id}`, {
             method: "GET", // hoặc không cần ghi vì GET là mặc định
             headers: {
               "Content-Type": "application/json"
