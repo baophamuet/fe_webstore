@@ -70,3 +70,76 @@
     }
   }
 }
+.selected {
+  background-color: #d0e8ff !important; // hoặc màu bạn muốn
+  transition: background-color 0.3s ease;
+
+  td {
+    font-weight: 600;
+    color: #003366;
+  }
+  .user-profile {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  color: #333; // ✅ màu chữ chính tối để dễ đọc
+
+  .avatar-section {
+    margin-bottom: 20px;
+
+    .avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    h2 {
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    p {
+      font-size: 14px;
+      color: #777;
+    }
+  }
+
+  .info-section {
+    text-align: left;
+    margin-top: 10px;
+
+    p {
+        margin: 10px 0;
+        font-size: 16px;
+        cursor: pointer;
+
+        strong {
+          font-weight: bold;
+        }
+
+        &:hover {
+          color: #0077cc;
+        }
+      }
+  }
+}
+}
+
+
+
+
