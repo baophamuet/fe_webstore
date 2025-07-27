@@ -3,6 +3,5 @@
 # dependencies
 node_modules
 public
-/src/assets
 # production
 build
