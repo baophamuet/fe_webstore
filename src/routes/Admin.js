@@ -1,5 +1,6 @@
 // src/pages/Admin.jsxhttp://localhost:3000/login/dashb
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { useAuth } from './AuthContext';
@@ -8,12 +9,13 @@ import Dashboard from "../components/admin/Dashboard";
 
 export default function Admin() {
       const {logout,user } = useAuth();
-     
+     const navigate = useNavigate();
       console.log("Checkkk userLogin:      ", user  )
       const handleChangeLogout = (e) =>{
-    e.preventDefault();
+    
     try {
       logout()
+      navigate('/login')
     }catch(e) {
       console.error('Login error:', e);
     }

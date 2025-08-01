@@ -20,14 +20,7 @@ function Login() {
     if (name === 'username') setUsername(value);
     if (name === 'password') setPassword(value);
   };
-  const handleChangeLogout = (e) =>{
-    e.preventDefault();
-    try {
-      logout()
-    }catch(e) {
-      console.error('Login error:', e);
-    }
-  }
+
   const handleClickRegister = () =>{
     navigate('/register')
   }
@@ -35,7 +28,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://baophamuet.site:8080/login', {
+      const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

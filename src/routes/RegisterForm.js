@@ -11,6 +11,7 @@ const RegisterForm = () => {
     full_name: "",
     gender: { value: "male", label: "Nam" },
     role: "user", // mặc định
+    avatar: null 
   });
 
   const genderOptions = [
@@ -34,26 +35,35 @@ const RegisterForm = () => {
       gender: selected
     }));
   };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData(prev => ({
+      ...prev,
+      avatar: file
+    }));
+  };
 
+  const formDataToSend = new FormData();
+  formDataToSend.append("username", formData.username);
+  formDataToSend.append("password", formData.password);
+  formDataToSend.append("email", formData.email);
+  formDataToSend.append("full_name", formData.full_name);
+  formDataToSend.append("gender", formData.gender.value);
+  formDataToSend.append("role", formData.role);
+  formDataToSend.append("created_at", new Date().toISOString());
+
+  // ✅ Gửi file đúng cách:
+  if (formData.avatar) {
+    formDataToSend.append("profile_avt", formData.avatar); // tên này phải trùng multer
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // TODO: Gửi API tại đây
    try {
-      const response = await fetch('http://baophamuet.site:8080/user', {
+      const response = await fetch('http://localhost:8080/user', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-          email: formData.email,
-          full_name: formData.full_name,
-          gender: formData.gender.value, // Lấy giá trị từ object
-          role: formData.role || "user",
-          created_at: new Date().toISOString()
-        })
+        body: formDataToSend
       });
 
       const result = await response.json();
@@ -106,7 +116,12 @@ const RegisterForm = () => {
           <option key={option.value} value={option.value}>{option.label}</option>
         ))}
       </select>
-
+      <label>Chọn ảnh Avatar</label>
+      <input
+        type="file"
+        name="profile_avt"
+        onChange={handleFileChange}
+      />
       <button type="submit">Đăng ký</button>
     </form>
   );
