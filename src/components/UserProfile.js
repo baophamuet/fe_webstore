@@ -106,7 +106,7 @@ const UserProfile = () => {
 
   if (formData.avatar) {
     formDataToSend.append("profile_avt", formData.avatar); // tên này phải trùng multer
-  } formDataToSend.append("profile_avt", null); // tên này phải trùng multer
+  }else formDataToSend.append("profile_avt", null); // tên này phải trùng multer
   try {
     const response = await fetch(`${server}/user`, {
       method: 'PUT', // hoặc 'POST' nếu backend bạn yêu cầu POST
@@ -121,9 +121,12 @@ const UserProfile = () => {
       setUserData(prev => ({
         ...prev,
         ...formData,
+        avatar: data.status.data.pathAvatar || null
       }));
       setEditProfile(false);
       setavatar(data.status.data.pathAvatar)
+      // Reload trang login
+      window.location.reload();
     } else {
       toast.error("Nhập sai mật khẩu hiện tại");
     }
@@ -171,7 +174,7 @@ const UserProfile = () => {
             </div>
             
           <div className="avatar-container"  onClick={handleAvatarClick}      >
-  <img src={server+avatar} alt="Avatar" className="avatar" />
+  <img src={`${server}${avatar}?t=${new Date().getTime()}`} alt="Avatar" className="avatar" />
   <FaCamera className="camera-icon"/>
    <input
             type="file"
@@ -191,7 +194,7 @@ const UserProfile = () => {
             Chỉnh sửa hồ sơ 
           </div>
           <div className="avatar-container">
-  <img src={server+avatar} alt="Avatar" className="avatar" />
+  <img src={`${server}${avatar}?t=${new Date().getTime()}`} alt="Avatar" className="avatar" />
 </div>
           </>
           }                    
