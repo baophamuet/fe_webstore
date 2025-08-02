@@ -7,7 +7,7 @@ import { FaSignOutAlt } from 'react-icons/fa';
 import Admin from './Admin';
 import UserProfile from '../components/UserProfile';
 
-
+const server = process.env.REACT_APP_API_URL;
 function Login() {
   const { login,logout } = useAuth();
   const [username, setUsername] = useState('');
@@ -28,7 +28,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8080/login', {
+      const response = await fetch(`${server}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

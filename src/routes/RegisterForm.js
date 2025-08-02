@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
 import "../styles/RegisterForm.scss";
-
+const server = process.env.REACT_APP_API_URL;
 const RegisterForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -55,13 +55,13 @@ const RegisterForm = () => {
   // ✅ Gửi file đúng cách:
   if (formData.avatar) {
     formDataToSend.append("profile_avt", formData.avatar); // tên này phải trùng multer
-  }
+  } else formDataToSend.append("profile_avt", null);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // TODO: Gửi API tại đây
    try {
-      const response = await fetch('http://localhost:8080/user', {
+      const response = await fetch(`${server}/user`, {
         method: 'POST',
         body: formDataToSend
       });

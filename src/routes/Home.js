@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
-
+const server = process.env.REACT_APP_API_URL;
 export default function Home() {
   const [products, setProducts] = useState([]);
   ///const { user } = useAuth(); 
@@ -10,7 +10,7 @@ export default function Home() {
     // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://baophamuet.site:8080/products", {
+        const response = await fetch(`${server}/products`, {
           method: "GET", // hoặc không cần ghi vì GET là mặc định
           headers: {
             "Content-Type": "application/json"

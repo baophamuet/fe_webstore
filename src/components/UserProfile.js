@@ -5,6 +5,9 @@ import { useAuth } from '../routes/AuthContext';
 import { FaSignOutAlt,FaUserEdit,FaKey,FaCamera } from 'react-icons/fa';
 import IconGoBack from './IconGoBack';
 import { toast } from "react-toastify";
+import gender_other from "../assets/images/gender_other.png"
+
+const server = process.env.REACT_APP_API_URL;
 
 const UserProfile = () => {
     const { user,logout, } = useAuth(); // Lấy user từ AuthContext
@@ -20,7 +23,7 @@ const UserProfile = () => {
     avatar: null,
     pathAvatar: '',
   });
-    const server= `http://localhost:8080`
+   // const server= `http://localhost:8080`
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
      const genderOptions = [
@@ -67,7 +70,11 @@ const UserProfile = () => {
           const data = await response.json(); // Chuyển kết quả thành object
           console.log(">>>>>>>>>> Check data:    ",data)
           setUserData(data.data); // Lưu thông tin user vào state
-          setavatar(data.data.pathAvatar)
+          if (data.data.pathAvatar =='') 
+            {setavatar(gender_other)
+              console.log(">>>>>>>>>> Check gender_other:    ",gender_other)
+            }
+            else  setavatar(data.data.pathAvatar)
           console.log(">>>>>>>>>> Check userData:    ",userData)
         } catch (error) {
           console.error("Lỗi khi lấy thông tin user:", error);
