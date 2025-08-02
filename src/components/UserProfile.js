@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 const UserProfile = () => {
     const { user,logout, } = useAuth(); // Lấy user từ AuthContext
     const [userData, setUserData] = useState(null);
+    const [avatar, setavatar] = useState(null);
     const [editProfile, setEditProfile] = useState(false);
     const [changePassword, setchangePassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ const UserProfile = () => {
     avatar: null,
     pathAvatar: '',
   });
+    const server= `http://localhost:8080`
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
      const genderOptions = [
@@ -26,7 +28,7 @@ const UserProfile = () => {
     { value: "female", label: "Nữ" },
     { value: "other", label: "Khác" }
   ];
-    const avatar= "https://scontent.fhan14-3.fna.fbcdn.net/v/t39.30808-6/489297728_8974365879331129_951253005109429353_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=gJp7cAySx8oQ7kNvwFfHOpo&_nc_oc=AdnV0Q13_PScZPz_PKssDtEcmhUyUnCPkKoQPMkGzcA0Q_rk1nl1JwU5YtAQ5xScN5sHHSAcnxGrsvRuGzL65P3Y&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_gid=ZovJhmmlyIn-K-0-ffkNQA&oh=00_AfQ-ZJrR0Wlq0kMEHNUlH8IqAR-Z0kwVIC3oMNwduiYFiA&oe=688A53F1"
+    //const avatar= "https://scontent.fhan14-3.fna.fbcdn.net/v/t39.30808-6/489297728_8974365879331129_951253005109429353_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=gJp7cAySx8oQ7kNvwFfHOpo&_nc_oc=AdnV0Q13_PScZPz_PKssDtEcmhUyUnCPkKoQPMkGzcA0Q_rk1nl1JwU5YtAQ5xScN5sHHSAcnxGrsvRuGzL65P3Y&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_gid=ZovJhmmlyIn-K-0-ffkNQA&oh=00_AfQ-ZJrR0Wlq0kMEHNUlH8IqAR-Z0kwVIC3oMNwduiYFiA&oe=688A53F1"
 
     const handleEditProfile = ()=>{
     console.log("check editProfile:   ",editProfile)
@@ -36,7 +38,8 @@ const UserProfile = () => {
         oldPassword: '',
         newPassword: '',
         gender: userData.gender,
-        role: userData.role
+        role: userData.role,
+        pathAvatar: userData.pathAvatar
       });
     if(!editProfile) setEditProfile(!editProfile)
     
@@ -54,7 +57,7 @@ const UserProfile = () => {
       const fetchProfile = async () => {
         if (!user) return; 
         try {
-          const response = await fetch(`http://localhost:8080/users/${user.id}`, {
+          const response = await fetch(`${server}/users/${user.id}`, {
             method: "GET", // hoặc không cần ghi vì GET là mặc định
             headers: {
               "Content-Type": "application/json"
@@ -64,6 +67,7 @@ const UserProfile = () => {
           const data = await response.json(); // Chuyển kết quả thành object
           console.log(">>>>>>>>>> Check data:    ",data)
           setUserData(data.data); // Lưu thông tin user vào state
+          setavatar(data.data.pathAvatar)
           console.log(">>>>>>>>>> Check userData:    ",userData)
         } catch (error) {
           console.error("Lỗi khi lấy thông tin user:", error);
@@ -99,8 +103,12 @@ const UserProfile = () => {
   
   formDataToSend.append("full_name", formData.full_name);
   formDataToSend.append("gender", formData.gender);
+
+  if (formData.avatar) {
+    formDataToSend.append("profile_avt", formData.avatar); // tên này phải trùng multer
+  } formDataToSend.append("profile_avt", null); // tên này phải trùng multer
   try {
-    const response = await fetch(`http://localhost:8080/user`, {
+    const response = await fetch(`${server}/user`, {
       method: 'PUT', // hoặc 'POST' nếu backend bạn yêu cầu POST
       body: formDataToSend
     });
@@ -115,7 +123,7 @@ const UserProfile = () => {
         ...formData,
       }));
       setEditProfile(false);
-  
+      setavatar(data.status.data.pathAvatar)
     } else {
       toast.error("Nhập sai mật khẩu hiện tại");
     }
@@ -146,7 +154,10 @@ const UserProfile = () => {
   return (
     <div className="user-profile">
         {!userData ? (
+      <>
       <p>Đang tải thông tin người dùng...</p>
+       <p className="logout" onClick={handleChangeLogout}><FaSignOutAlt /> Đăng xuất</p>
+      </>
     ) : (
       <>
             <div className="avatar-section">
@@ -160,7 +171,7 @@ const UserProfile = () => {
             </div>
             
           <div className="avatar-container"  onClick={handleAvatarClick}      >
-  <img src={avatar} alt="Avatar" className="avatar" />
+  <img src={server+avatar} alt="Avatar" className="avatar" />
   <FaCamera className="camera-icon"/>
    <input
             type="file"
@@ -180,7 +191,7 @@ const UserProfile = () => {
             Chỉnh sửa hồ sơ 
           </div>
           <div className="avatar-container">
-  <img src={avatar} alt="Avatar" className="avatar" />
+  <img src={server+avatar} alt="Avatar" className="avatar" />
 </div>
           </>
           }                    
