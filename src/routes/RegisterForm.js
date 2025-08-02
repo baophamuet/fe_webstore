@@ -71,7 +71,7 @@ const RegisterForm = () => {
       if (response.ok) {
         
         console.log("Kết quả:", result);
-        if (response.body.status) {
+        if (result) {
         // Reset form
         setFormData({
           username: "",

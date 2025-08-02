@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/UserProfile.scss';
 import { useAuth } from '../routes/AuthContext';
@@ -11,7 +11,15 @@ const UserProfile = () => {
     const [userData, setUserData] = useState(null);
     const [editProfile, setEditProfile] = useState(false);
     const [changePassword, setchangePassword] = useState(false);
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    oldPassword: '',
+    newPassword: '',
+    avatar: null,
+    pathAvatar: '',
+  });
+    const fileInputRef = useRef(null);
     const navigate = useNavigate();
      const genderOptions = [
     { value: "male", label: "Nam" },
@@ -107,6 +115,7 @@ const UserProfile = () => {
         ...formData,
       }));
       setEditProfile(false);
+  
     } else {
       toast.error("Nhập sai mật khẩu hiện tại");
     }
@@ -120,11 +129,18 @@ const UserProfile = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  const handleAvatarClick = (e) => {
+  
+    const handleAvatarClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+  const handleFileChange  = (e) => {
     const file = e.target.files[0];
     setFormData(prev => ({
       ...prev,
-      avatar: file
+      avatar: file,
+      pathAvatar: URL.createObjectURL(file),
     }));
   };
   return (
@@ -146,6 +162,14 @@ const UserProfile = () => {
           <div className="avatar-container"  onClick={handleAvatarClick}      >
   <img src={avatar} alt="Avatar" className="avatar" />
   <FaCamera className="camera-icon"/>
+   <input
+            type="file"
+            name="profile_avt"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
 </div>
           </>
           
