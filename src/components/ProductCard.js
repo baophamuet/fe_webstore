@@ -1,35 +1,35 @@
 import React from "react";
+import PropTypes from "prop-types";
 import "../styles/ProductCard.scss";
 
-export default function ProductCard() {
-  
+export default function ProductCard({ image, name, price, description, stock }) {
   return (
     <div className="product-card">
       {/* Ảnh sản phẩm */}
       <div className="product-image">
-        <img
-          src="https://pos.nvncdn.com/fa2431-2286/ps/20250520_iQZZZQ2ucf.jpeg?v=1747734626"
-          alt="Áo Phông Regular Cotton 1400"
-        />
+        <img src={image} alt={name} loading="lazy" />
       </div>
 
       {/* Thông tin sản phẩm */}
       <div className="product-info">
-        <div className="product-colors">
-          <span className="color-dot black" />
-          <span className="color-dot gray" />
-          <span className="color-dot red selected" />
-        </div>
-
-        <p className="product-name">Áo Phông Regular Cotton 1400</p>
-        <p className="product-price">269,000₫</p>
-      </div>
-
-      {/* Nút hành động */}
-      <div className="product-buttons">
-        <button className="btn buy-now">🛒 Mua nhanh</button>
-        <button className="btn view-detail">🔍 Xem chi tiết</button>
+        <h3 className="product-name">{name}</h3>
+        <p className="product-price">{price}</p>
+        <p className="product-description">{description}</p>
+        <p className="product-stock">Còn lại: {stock} sản phẩm</p>
       </div>
     </div>
   );
 }
+
+ProductCard.propTypes = {
+  image: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  stock: PropTypes.number
+};
+
+ProductCard.defaultProps = {
+  description: "Không có mô tả",
+  stock: 0
+};

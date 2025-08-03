@@ -9,10 +9,18 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 3s linear;
+    animation: fade-in-out 5s infinite;
   }
 }
 
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
 .App-header {
   background-color: #e3e4e6;
   min-height: 100vh;

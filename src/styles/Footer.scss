@@ -1,0 +1,121 @@
+.footer {
+  background: #f5f5f5;
+  color: #333;
+  padding: 2rem;
+
+  .footer-top {
+  height: 40vh; /* hoặc 40vh */
+    @media (max-width: 768px) {
+    height: 200px;
+  }
+  @media (max-width: 480px) {
+    height: 20vh;
+  }
+  background-image: url('../../../be_reactjs/uploads/images/products/footerweb.jpg'); // hoặc link ảnh online
+  background-repeat: no-repeat;
+  background-size: cover;           // ✅ phủ đầy theo chiều rộng và giữ tỉ lệ
+  background-position: center;      // ✅ căn giữa ảnh
+  aspect-ratio: 16 / 6;             // ✅ giữ đúng tỉ lệ khung hình nếu cần (tuỳ bạn điều chỉnh)
+  width: 100%;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 2rem;
+  .App-logo {
+  height: 10vmin;
+  pointer-events: none;
+  color: black;
+  background-color: black;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: fade-in-out 5s infinite;
+  }
+}
+
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 2;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+  h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1rem;
+  }
+}
+
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .footer-section {
+      flex: 1 1 220px;
+      margin: 1rem;
+
+      h4 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        li {
+          margin-bottom: 0.5rem;
+        }
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+
+        svg {
+          font-size: 1.3rem;
+          cursor: pointer;
+          color: #000;
+
+          &:hover {
+            color: #888;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-bottom-note {
+    text-align: center;
+    padding-top: 2rem;
+    font-size: 0.9rem;
+
+    a {
+      color: #555;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

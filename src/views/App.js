@@ -10,6 +10,7 @@ import { AuthProvider } from '../routes/AuthContext';
 import UserProfile from '../components/UserProfile';
 import ListUsers from '../components/admin/ListUsers';
 import RegisterForm from '../routes/RegisterForm';
+import Footer from '../components/Footer';
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
           <header className="App-header">
             <Nav />
             <Routes>
-              <Route path="/" element={<Mycomponent />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/test" element={<Mycomponent />} />
               <Route path="/home" element={<Home />} />
               <Route path="/helps" element={<div>Contact Page Coming Soon</div>} />
               <Route path="/login" element={<Login />} />
@@ -41,6 +43,7 @@ function App() {
             pauseOnHover
             draggable
           />
+          <Footer />
         </div>
       </BrowserRouter>
     </AuthProvider>

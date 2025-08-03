@@ -1,26 +1,39 @@
 .topnav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background-color: #333;
   padding: 10px 20px;
   color: white;
 
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-     text-align: left;
-    color: white;
+  /* Logo section - Căn trái */
+  .logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto; /* Đẩy phần còn lại sang phải */
+
+    .App-logo {
+      height: 40px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
   }
 
+  /* Search bar - Căn giữa (nếu cần) hoặc sát nav-links */
   .search-bar {
     display: flex;
     align-items: center;
     background: transparent;
     border-bottom: 1px solid white;
-    padding: 5px 10px;
+    padding: 3px 8px;
     color: white;
-    width: 300px;
+    width: 250px;
+    margin: 0 20px; /* Giảm khoảng cách với nav-links */
 
     .search-icon {
       margin-right: 10px;
@@ -39,14 +52,15 @@
     }
   }
 
+  /* Nav links - Căn phải */
   .nav-links {
     display: flex;
     align-items: center;
+    gap: 15px;
 
     a {
       color: #f2f2f2;
       text-decoration: none;
-      margin: 0 10px;
       font-size: 16px;
 
       &.active {
@@ -60,7 +74,6 @@
 
     .icon {
       font-size: 18px;
-      margin-left: 15px;
       cursor: pointer;
 
       &:hover {

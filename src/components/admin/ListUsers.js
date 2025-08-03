@@ -3,7 +3,7 @@ import '../../styles/ListUsers.scss';
 import { useAuth } from '../../routes/AuthContext';
 import { FaArrowLeft, FaArrowRight  } from 'react-icons/fa';
 import IconGoBack from '../IconGoBack';
-
+const server = process.env.REACT_APP_API_URL;
 const ListUsers = () => {
     const { user,logout } = useAuth(); // Lấy user từ AuthContext
     const [ Users, setUsers] = useState(null);
@@ -16,7 +16,7 @@ const ListUsers = () => {
       const fetchProfile = async () => {
         if (!user) return; 
         try {
-          const response = await fetch(`http://baophamuet.site:8080/users/`, {
+          const response = await fetch(`${server}/users/`, {
             method: "GET", // hoặc không cần ghi vì GET là mặc định
             headers: {
               "Content-Type": "application/json"
@@ -60,7 +60,7 @@ const ListUsers = () => {
                 <td>
                   <div className="avatar-section">
                     <img
-                      src={userview.avatar || avatar}
+                      src={userview.pathAvatar ? server+ userview.pathAvatar : avatar}
                       alt="Avatar"
                       className="avatar"
                     />
@@ -86,7 +86,7 @@ const ListUsers = () => {
     {selectedUser && (
   <div className="user-profile">
               <div className="avatar-section">
-          <img src={avatar} alt="Avatar" className="avatar" />
+          <img src={server+selectedUser.pathAvatar} alt="Avatar" className="avatar" />
           <h2>{selectedUser.full_name}</h2>
           <p>@{selectedUser.username}</p>
         </div>
