@@ -12,6 +12,7 @@ class Nav extends React.Component {
         <div className="logo-section">
           <img src={logo} className="App-logo" alt="logo" />
           <NavLink className="logo" to="/home">SHOPPINK</NavLink>
+          <img src={logo} className="App-logo" alt="logo" />
         </div>
 
         {/* Search bar - Giữa (hoặc sát nav-links) */}

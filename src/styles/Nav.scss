@@ -1,16 +1,23 @@
 .topnav {
-  display: flex;
-  align-items: center;
+  position: fixed;        // ✅ Cố định navbar
+  top: 0;                 // ✅ Gắn mép trên cùng của trình duyệt
+  left: 0;
+  right: 0;
+  z-index: 1000;          // ✅ Tránh bị các phần khác đè lên
   background-color: #333;
   padding: 10px 20px;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
 
-  /* Logo section - Căn trái */
+  // Logo section
   .logo-section {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-right: auto; /* Đẩy phần còn lại sang phải */
+    margin-right: auto;
 
     .App-logo {
       height: 40px;
@@ -21,10 +28,11 @@
       font-weight: bold;
       color: white;
       text-decoration: none;
+      white-space: nowrap;
     }
   }
 
-  /* Search bar - Căn giữa (nếu cần) hoặc sát nav-links */
+  // Search bar
   .search-bar {
     display: flex;
     align-items: center;
@@ -33,7 +41,7 @@
     padding: 3px 8px;
     color: white;
     width: 250px;
-    margin: 0 20px; /* Giảm khoảng cách với nav-links */
+    margin: 0 20px;
 
     .search-icon {
       margin-right: 10px;
@@ -52,7 +60,7 @@
     }
   }
 
-  /* Nav links - Căn phải */
+  // Nav links
   .nav-links {
     display: flex;
     align-items: center;
@@ -79,6 +87,29 @@
       &:hover {
         color: #04AA6D;
       }
+    }
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    .logo-section {
+      justify-content: center;
+      margin: 0 0 10px 0;
+    }
+
+    .search-bar {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .nav-links {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
   }
 }
