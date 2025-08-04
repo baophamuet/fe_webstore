@@ -1,9 +1,5 @@
 .topnav {
-  position: fixed;        // ✅ Cố định navbar
-  top: 0;                 // ✅ Gắn mép trên cùng của trình duyệt
-  left: 0;
-  right: 0;
-  z-index: 1000;          // ✅ Tránh bị các phần khác đè lên
+  position: relative; // Mặc định không che nội dung
   background-color: #333;
   padding: 10px 20px;
   color: white;
@@ -11,8 +7,30 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  z-index: 1000;
+  transform: translateY(0);
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 
-  // Logo section
+  &.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(51, 51, 51, 0.95);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transform: translateY(0); // Trượt xuống khi xuất hiện
+    animation: slideDown 1s ease forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
   .logo-section {
     display: flex;
     align-items: center;
@@ -32,7 +50,6 @@
     }
   }
 
-  // Search bar
   .search-bar {
     display: flex;
     align-items: center;
@@ -60,7 +77,6 @@
     }
   }
 
-  // Nav links
   .nav-links {
     display: flex;
     align-items: center;
@@ -90,7 +106,6 @@
     }
   }
 
-  // Responsive
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
