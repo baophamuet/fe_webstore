@@ -38,9 +38,13 @@ export default function Home() {
         (
           <ProductCard
             key={product.id}
-            images={product.images 
-              ? JSON.parse(product.images) 
-              : ["https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"]}
+            images={
+                Array.isArray(product.images)
+                ? product.images
+                : typeof product.images === "string"
+                ? JSON.parse(product.images)
+                : ["https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"]}
+              
             price={`${product.price? product.price : `Liên hệ chi tiết $`}$`}
             description={product.description}
             stock={product.stock}
