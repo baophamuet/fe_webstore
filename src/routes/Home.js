@@ -5,7 +5,7 @@ const server = process.env.REACT_APP_API_URL;
 export default function Home() {
   const [products, setProducts] = useState([]);
   const { user } = useAuth(); 
-
+  const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
   useEffect(() => {
     // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
@@ -38,13 +38,14 @@ export default function Home() {
         (
           <ProductCard
             key={product.id}
+            productId={product.id}
             images={
-                Array.isArray(product.images)
+                typeof product.images === "string"
+                ? (product.images.trim() !== "" ? JSON.parse(product.images) : [defaultImage])
+                : Array.isArray(product.images)
                 ? product.images
-                : typeof product.images === "string"
-                ? JSON.parse(product.images)
-                : ["https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"]}
-              
+                : [defaultImage]
+            }
             price={`${product.price? product.price : `Liên hệ chi tiết $`}$`}
             description={product.description}
             stock={product.stock}

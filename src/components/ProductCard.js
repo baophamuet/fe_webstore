@@ -5,20 +5,21 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/ProductCard.scss";
 import { useAuth } from "../routes/AuthContext";
-import { FaPen,   } from "react-icons/fa";
+import { FaPen, FaHeart ,  } from "react-icons/fa";
 
-export default function ProductCard({ images, name, price, description, stock,user }) {
+export default function ProductCard({ productId,images, name, price, description, stock,user }) {
 
   const settings = {
     dots: true,
-    infinite: true,
-    speed: 500,
-    arrows: false,
+    infinite: true, /// case 1 ảnh phải trả thẻ riêng không sẽ bug
+    speed: 1000,
+    arrows: true,
     slidesToShow: 1,
     slidesToScroll: 1,
     swipe: true,
-    autoplay: false,
-    adaptiveHeight: true,
+    autoplay: true,
+    autoplaySpeed: 5000, 
+    adaptiveHeight: false,
   };
 
   return (
@@ -26,14 +27,30 @@ export default function ProductCard({ images, name, price, description, stock,us
       {/* Slider ảnh sản phẩm */}
       <div className="product-image">
         {user?.role ==="admin" ? <FaPen className="edit-icon"/> : null}
-        <Slider {...settings}>
-          {(images ?? []).map((img, idx) => (
+        {images?.length > 1 
+        ?(
+          <Slider {...settings}>
+            {images.map((img, idx) => (
             <div key={idx} className="image-slide">
               <img src={img} alt={`${name}-${idx}`} loading="lazy" />
-            </div>
-          ))}
-        </Slider>
+            </div>))
+            }
+          </Slider>) 
+         : (
+          <div className="image-slide">
+            <img src={images[0]} alt={`${name}-0`} loading="lazy" />
+          </div>
+          )}
       </div>
+
+      {/* Thẻ giữa slider và thông tin sản phẩm */}
+      <div className="product-actions">
+        <div className="left">
+          <FaHeart className="heart-icon" />
+            <span>Yêu thích</span>    
+        </div>
+        <button className="view-details-button">Xem chi tiết</button>
+        </div>
 
       {/* Thông tin sản phẩm */}
       <div className="product-info">

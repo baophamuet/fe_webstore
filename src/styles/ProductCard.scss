@@ -1,32 +1,35 @@
 .product-card {
-  width: 100%; /* Đảm bảo card chiếm toàn bộ chiều rộng của cột */
-  max-width: 500px; /* Tăng kích thước tối đa của thẻ sản phẩm */
+  width: 100%;
+  max-width: 500px;
   background-color: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px; /* Bo góc */
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-family: sans-serif;
-  transition: transform 0.3s ease; /* Hiệu ứng scale khi hover */
+  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Đảm bảo các phần tử bên trong được căn đều */
-  height: 100%; /* Chiếm toàn bộ chiều cao của ô lưới */
-  margin: 0; /* Loại bỏ khoảng cách xung quanh thẻ */
-  padding: 0; /* Loại bỏ padding nếu có */
-  box-sizing: border-box; /* Đảm bảo kích thước bao gồm cả viền và padding */
+  justify-content: space-between;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  justify-content: space-between;
 }
 
 .product-card:hover {
-  transform: scale(1.1); /* Scale khi hover */
+  transform: scale(1.1);
 }
 
 .product-image {
+  flex-grow: 1;
   width: 100%;
   height: 350px;
   background-color: #f3f4f6;
-  flex: 1; /* Allow the image to take up available space proportionally */
+  flex: 1;
 }
+
 .edit-icon {
   position: absolute;
   top: 10px;
@@ -38,7 +41,7 @@
   cursor: pointer;
   z-index: 2;
 
-  font-size: 5px; /* 👈 Giảm kích thước icon */
+  font-size: 5px;
   width: 32px;
   height: 32px;
   display: flex;
@@ -51,16 +54,62 @@
   }
 }
 
-
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* ✅ PHẦN MỚI THÊM */
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15% 5%;
+  gap: 8px;
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .heart-icon {
+      color: rgb(138, 131, 131);
+      font-size: 30px;
+      &:hover {
+      color: #da3535;
+    }
+    }
+
+    span {
+      font-size: 15px;
+      color: #1f2937;
+      font-weight: 500;
+    }
+    
+  }
+
+  .view-details-button {
+    padding: 3% 8%;
+    background-color: #1ABC9C;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #17a589;
+    }
+  }
+}
+
 .product-info {
+  height: 30%;
   padding: 12px;
-  flex: 0 0 auto; /* Ensure the info section stays at the bottom */
+  flex: 0 0 auto;
+  flex-shrink: 0;
 }
 
 .product-colors {
@@ -108,13 +157,13 @@
 
 .product-description {
   font-size: 14px;
-  color: #4b5563; /* Màu xám đậm để dễ đọc */
+  color: #4b5563;
   margin-top: 8px;
 }
 
 .product-stock {
   font-size: 14px;
-  color: #1f2937; /* Màu đen để nổi bật */
+  color: #1f2937;
   margin-top: 4px;
 }
 
@@ -142,32 +191,48 @@
 }
 
 .view-detail {
-  background-color: #f9f9f9; /* Đổi nền để dễ đọc hơn */
-  color: #000; /* Chữ đen */
+  background-color: #f9f9f9;
+  color: #000;
   border-left: 1px solid #e5e7eb;
 }
 
 .view-detail:hover {
-  background-color: #e5e7eb; /* Nền xám nhạt khi hover */
-  color: #000; /* Chữ đen */
+  background-color: #e5e7eb;
+  color: #000;
 }
 
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Tự động điều chỉnh số cột */
-  gap: 24px 16px; /* Điều chỉnh khoảng cách giữa các thẻ theo chiều ngang và dọc */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px 16px;
   padding: 16px;
-  background-color: #f9f9f9; /* Nền nhẹ */
+  background-color: #f9f9f9;
 }
+.image-slide {
+  height: 350px; /* hoặc 300px nếu muốn thấp hơn */
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 
 @media (min-width: 1200px) {
   .product-list {
-    grid-template-columns: repeat(4, 1fr); /* Tối đa 4 cột */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 768px) {
   .product-list {
-    grid-template-columns: repeat(2, 1fr); /* Tối thiểu 2 cột */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
