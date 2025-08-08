@@ -6,6 +6,9 @@ import { useAuth } from './AuthContext';
 import { FaSignOutAlt } from 'react-icons/fa';
 import Admin from './Admin';
 import UserProfile from '../components/UserProfile';
+import { jwtDecode } from 'jwt-decode';
+
+
 
 const server = process.env.REACT_APP_API_URL;
 function Login() {
@@ -30,24 +33,34 @@ function Login() {
     try {
       const response = await fetch(`${server}/login`, {
         method: 'POST',
+        credentials: 'include', //  cookie đính kèm
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ username, password })
       });
 
+
       const data = await response.json();
       console.log(">>>>>>> check data:  ", data);
-      if (data.status) {
+     
+
+      if (response.ok && data.status && data.token) {
         //setMessage('✅ Đăng nhập thành công!');
+
+
+        const userdecoded = jwtDecode(data.token);
+        
+
+        console.log(">>>>>>> userdecoded :  ", userdecoded);
         localStorage.setItem('token', data.token);
-        let role = data.status.role
-        let id  = data.status.id
+        let username= userdecoded.username
+        let role = userdecoded.role
+        let id  = userdecoded.id
         //console.log(">>>>>>> check data.user:  ", data);
         login({username,role,id})
-        console.log(">>>>>>> check data.user1:  ", { username, password });
-         console.log(">>>>>>> check data.user2:  ", JSON.parse(localStorage.getItem('user')));
-        if (role!='admin'){
+
+        if (role!=='admin'){
           setTimeout(() => {
           navigate('/home');
         }, 100);

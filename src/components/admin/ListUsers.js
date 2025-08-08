@@ -3,13 +3,14 @@ import '../../styles/ListUsers.scss';
 import { useAuth } from '../../routes/AuthContext';
 import { FaArrowLeft, FaArrowRight  } from 'react-icons/fa';
 import IconGoBack from '../IconGoBack';
+import avatarDefault from '../../assets/images/gender_other.png'
+
 const server = process.env.REACT_APP_API_URL;
 const ListUsers = () => {
     const { user,logout } = useAuth(); // Lấy user từ AuthContext
     const [ Users, setUsers] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
 
-    const avatar= "https://scontent.fhan14-3.fna.fbcdn.net/v/t39.30808-6/489297728_8974365879331129_951253005109429353_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_ohc=gJp7cAySx8oQ7kNvwFfHOpo&_nc_oc=AdnV0Q13_PScZPz_PKssDtEcmhUyUnCPkKoQPMkGzcA0Q_rk1nl1JwU5YtAQ5xScN5sHHSAcnxGrsvRuGzL65P3Y&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_gid=ZovJhmmlyIn-K-0-ffkNQA&oh=00_AfQ-ZJrR0Wlq0kMEHNUlH8IqAR-Z0kwVIC3oMNwduiYFiA&oe=688A53F1"
 
     useEffect(() => {
       // Hàm lấy danh sách sản phẩm
@@ -18,6 +19,7 @@ const ListUsers = () => {
         try {
           const response = await fetch(`${server}/users/`, {
             method: "GET", // hoặc không cần ghi vì GET là mặc định
+            credentials: 'include', //  cookie đính kèm
             headers: {
               "Content-Type": "application/json"
             }
@@ -26,7 +28,7 @@ const ListUsers = () => {
           const data = await response.json(); // Chuyển kết quả thành object
           console.log(">>>>>>>>>> Check data:    ",data)
           setUsers(data.data.Users); // Lưu thông tin user vào state
-          console.log(">>>>>>>>>> Check userData:    ",Users)
+          console.log(">>>>>>>>>> Check userData:    ",(data.data.Users))
         } catch (error) {
           console.error("Lỗi khi lấy thông tin user:", error);
         }
@@ -60,7 +62,7 @@ const ListUsers = () => {
                 <td>
                   <div className="avatar-section">
                     <img
-                      src={userview.pathAvatar ? server+ userview.pathAvatar : avatar}
+                      src={userview.pathAvatar ? server+ userview.pathAvatar : avatarDefault}
                       alt="Avatar"
                       className="avatar"
                     />

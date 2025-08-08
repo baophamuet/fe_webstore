@@ -10,13 +10,16 @@ export default function Home() {
     // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
       try {
+            console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
+
         const response = await fetch(`${server}/products`, {
           method: "GET", // hoặc không cần ghi vì GET là mặc định
+           credentials: 'include', // Quan trọng
           headers: {
             "Content-Type": "application/json"
           }
         });
-
+        console.log("HTTP Status:", response.status); 
         const data = await response.json(); // Chuyển kết quả thành object
         console.log(">>>>>>>>>> Check data:    ",data)
         setProducts(data.data); // Lưu danh sách sản phẩm vào state

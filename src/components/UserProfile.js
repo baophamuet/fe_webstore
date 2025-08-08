@@ -11,7 +11,7 @@ const server = process.env.REACT_APP_API_URL;
 
 const UserProfile = () => {
     const { user,logout, } = useAuth(); // Lấy user từ AuthContext
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState(localStorage.getItem('user'));
     const [avatar, setavatar] = useState(null);
     const [editProfile, setEditProfile] = useState(false);
     const [changePassword, setchangePassword] = useState(false);
@@ -62,6 +62,7 @@ const UserProfile = () => {
         try {
           const response = await fetch(`${server}/users/${user.id}`, {
             method: "GET", // hoặc không cần ghi vì GET là mặc định
+            credentials: 'include', //  cookie đính kèm
             headers: {
               "Content-Type": "application/json"
             }
@@ -117,6 +118,7 @@ const UserProfile = () => {
   try {
     const response = await fetch(`${server}/user`, {
       method: 'PUT', // hoặc 'POST' nếu backend bạn yêu cầu POST
+      credentials: 'include', //  cookie đính kèm
       body: formDataToSend
     });
 
