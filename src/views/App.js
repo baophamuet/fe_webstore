@@ -1,8 +1,8 @@
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 import Mycomponent from './example/Mycomponent';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ProductCard from '../components/ProductCard';
 import Login from '../routes/Login';
 import Home from '../routes/Home';
 import Nav from '../components/navbar';
@@ -30,22 +30,23 @@ function App() {
               <Route path="/login/users" excact element={<ListUsers/>} />
               <Route path="/login/users/:id" element={<UserProfile />} />
               <Route path="/register" element={<RegisterForm />} />
-              
+
               
             </Routes>
+            
           </header>
-          <ToastContainer 
+          <Footer />
+        </div>
+      </BrowserRouter>
+                <ToastContainer 
             position="top-right"
-            autoClose={500}
+            autoClose={1000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
             pauseOnHover
             draggable
           />
-          <Footer />
-        </div>
-      </BrowserRouter>
     </AuthProvider>
   );
 }

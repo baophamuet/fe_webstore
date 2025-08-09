@@ -1,4 +1,3 @@
-// src/pages/Admin.jsxhttp://localhost:3000/login/dashb
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -12,7 +11,7 @@ export default function Admin() {
      const navigate = useNavigate();
       console.log("Checkkk userLogin:      ", user  )
       const handleChangeLogout = (e) =>{
-    
+          e.preventDefault(); // chặn gọi lại từ form
     try {
       logout()
       navigate('/login')

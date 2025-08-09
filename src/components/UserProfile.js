@@ -4,7 +4,9 @@ import '../styles/UserProfile.scss';
 import { useAuth } from '../routes/AuthContext';
 import { FaSignOutAlt,FaUserEdit,FaKey,FaCamera } from 'react-icons/fa';
 import IconGoBack from './IconGoBack';
-import { toast } from "react-toastify";
+import { toast  } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 import gender_other from "../assets/images/gender_other.png"
 
 const server = process.env.REACT_APP_API_URL;
@@ -13,6 +15,7 @@ const UserProfile = () => {
     const { user,logout, } = useAuth(); // Lấy user từ AuthContext
     const [userData, setUserData] = useState(localStorage.getItem('user'));
     const [avatar, setavatar] = useState(null);
+    const [preview, setPreview] = useState(false);
     const [editProfile, setEditProfile] = useState(false);
     const [changePassword, setchangePassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -133,9 +136,12 @@ const UserProfile = () => {
         avatar: data.status.data.pathAvatar || null
       }));
       setEditProfile(false);
+      setPreview(false); // đổi lại ảnh gốc khi không còn preview ảnh chọn
       setavatar(data.status.data.pathAvatar)
-      // Reload trang login
-      window.location.reload();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // 1.5 giây
     } else {
       toast.error("Nhập sai mật khẩu hiện tại");
     }
@@ -157,11 +163,17 @@ const UserProfile = () => {
   };
   const handleFileChange  = (e) => {
     const file = e.target.files[0];
+    const previewUrl = URL.createObjectURL(file);
+
     setFormData(prev => ({
       ...prev,
       avatar: file,
-      pathAvatar: URL.createObjectURL(file),
+      pathAvatar: previewUrl,
     }));
+      setavatar(previewUrl); // cập nhật luôn để UI hiển thị ngay ảnh trang chỉnh s
+    if (fileInputRef.current?.files?.length) {
+      setPreview(true); // nếu đã có ảnh chọn thì hiển thị preview
+    }
   };
   return (
     <div className="user-profile">
@@ -183,7 +195,10 @@ const UserProfile = () => {
             </div>
             
           <div className="avatar-container"  onClick={handleAvatarClick}      >
-  <img src={`${server}${avatar}?t=${new Date().getTime()}`} alt="Avatar" className="avatar" />
+          {preview 
+          ? <img src={avatar} alt="Avatar" className="avatar" />
+          : <img src={`${server}${avatar}?t=${new Date().getTime()}`} alt="Avatar" className="avatar" />
+         }  
   <FaCamera className="camera-icon"/>
    <input
             type="file"
@@ -292,6 +307,7 @@ const UserProfile = () => {
       </div>
       </>  
     )}
+
     </div>
   );
 };

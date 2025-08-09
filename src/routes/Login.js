@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect  } from 'react';
 import '../styles/Login.scss';
-import { toast, ToastContainer } from 'react-toastify';
-import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate,useLocation } from "react-router-dom";
 import { useAuth } from './AuthContext';
 import { FaSignOutAlt } from 'react-icons/fa';
 import Admin from './Admin';
 import UserProfile from '../components/UserProfile';
 import { jwtDecode } from 'jwt-decode';
-
 
 
 const server = process.env.REACT_APP_API_URL;
@@ -17,7 +17,13 @@ function Login() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  
+
   const userLogin= JSON.parse(localStorage.getItem('user'))
+  useEffect(() => {
+    window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
+  }, [pathname]);
   const handleChangeLogin = (e) => {
     const { name, value } = e.target;
     if (name === 'username') setUsername(value);
@@ -63,9 +69,14 @@ function Login() {
         if (role!=='admin'){
           setTimeout(() => {
           navigate('/home');
+          toast.success("Đăng nhập thành công!");
         }, 100);
+        } else {
+          navigate('/login');
+          toast.success("Đăng nhập thành công!");
         }
-        toast.success("Đăng nhập thành công!");
+        setMessage('');
+        
 
       } else {
         setMessage(data.message);
@@ -105,16 +116,7 @@ function Login() {
       <button  type="submit" onClick={()=>{handleClickRegister()}}
       >Đăng ký</button>
       {message && <p className="message">{message}</p>}
-      <ToastContainer
-        position="top-right"
-        autoClose={500}
-        hideProgressBar={false}
-        closeButton={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-        theme="light"
-      />
+  
     </div>
   );
   else if (userLogin.role=='admin') {
@@ -139,16 +141,7 @@ function Login() {
           <p>Lịch sử order</p>
         </div>
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={500}
-        hideProgressBar={false}
-        closeButton={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-        theme="light"
-      />
+
     </div>
   )
 }

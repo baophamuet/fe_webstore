@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, } from "react";
+import { useLocation } from 'react-router-dom';
+
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
 const server = process.env.REACT_APP_API_URL;
 export default function Home() {
   const [products, setProducts] = useState([]);
   const { user } = useAuth(); 
+  const { pathname } = useLocation();
+
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
   useEffect(() => {
     // Hàm lấy danh sách sản phẩm
+    window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
+
     const fetchProducts = async () => {
       try {
             console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
@@ -30,7 +36,7 @@ export default function Home() {
 
     // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
-  }, []);
+  }, [pathname]);
   
   return (
     <div className="px-8 py-6">
