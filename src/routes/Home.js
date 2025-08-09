@@ -11,9 +11,9 @@ export default function Home() {
 
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
   useEffect(() => {
-    // Hàm lấy danh sách sản phẩm
     window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
 
+    // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
       try {
             console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL

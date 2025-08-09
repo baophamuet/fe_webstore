@@ -1,14 +1,17 @@
-import React from "react";
+import React,{useState}  from "react";
 import PropTypes from "prop-types";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/ProductCard.scss";
 import { useAuth } from "../routes/AuthContext";
-import { FaPen, FaHeart ,  } from "react-icons/fa";
+import { FaPen, FaHeart , FaShoppingCart, } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 export default function ProductCard({ productId,images, name, price, description, stock,user }) {
-
+  const [IconHeart, setIconHeart] = useState(false);
+  const [IconShoppingCart, setIconShoppingCart] = useState(false);
+      const navigate = useNavigate();
   const settings = {
     dots: true,
     infinite: true, /// case 1 ảnh phải trả thẻ riêng không sẽ bug
@@ -21,7 +24,20 @@ export default function ProductCard({ productId,images, name, price, description
     autoplaySpeed: 5000, 
     adaptiveHeight: false,
   };
-
+  const handleCickIconHeart = () => {
+    setIconHeart(!IconHeart);
+  }
+  const handleCickIconShoppingCart = () => {
+    setIconShoppingCart(!IconShoppingCart);
+  }
+  const handleClickViewDetail = () => {
+  try {
+    navigate(`/products/${productId}`); // chuyển sang trang login
+    
+    }catch(e) {
+      console.error('Login error:', e);
+    }
+  }
   return (
     <div className="product-card">
       {/* Slider ảnh sản phẩm */}
@@ -46,10 +62,28 @@ export default function ProductCard({ productId,images, name, price, description
       {/* Thẻ giữa slider và thông tin sản phẩm */}
       <div className="product-actions">
         <div className="left">
-          <FaHeart className="heart-icon" />
+          {IconHeart 
+            ?<FaHeart className="heart-icon-like" onClick={handleCickIconHeart}/>    
+            :<FaHeart className="heart-icon-non" onClick={handleCickIconHeart} />
+        }
+          
             <span>Yêu thích</span>    
         </div>
-        <button className="view-details-button">Xem chi tiết</button>
+        <button className="view-details-button" onClick={handleClickViewDetail}>Xem chi tiết</button>
+        </div>
+      {/* Thẻ giữa mua ngay hoặc thêm vào giỏ hàng */}
+      <div className="product-actions-FaShoppingCart">
+        {IconShoppingCart
+         ?<div className="left">
+          <FaShoppingCart className="ShoppingCart-added" onClick={handleCickIconShoppingCart} />
+            <span>Đã thêm vào giỏ hàng</span>    
+        </div>        
+         :<div className="left">
+          <FaShoppingCart className="ShoppingCart-non-added" onClick={handleCickIconShoppingCart} />
+            <span>Thêm vào giỏ hàng</span>    
+        </div>
+        }
+
         </div>
 
       {/* Thông tin sản phẩm */}

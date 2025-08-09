@@ -11,6 +11,8 @@ import UserProfile from '../components/UserProfile';
 import ListUsers from '../components/admin/ListUsers';
 import RegisterForm from '../routes/RegisterForm';
 import Footer from '../components/Footer';
+import ProductCard from '../components/ProductCard';
+import ProductDetail from '../components/ProductDetail';
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
               <Route path="/login/users" excact element={<ListUsers/>} />
               <Route path="/login/users/:id" element={<UserProfile />} />
               <Route path="/register" element={<RegisterForm />} />
+              <Route path="/products/:ProductId" element={<ProductDetail />} />
 
               
             </Routes>
