@@ -8,9 +8,12 @@ import { useAuth } from "../routes/AuthContext";
 import { FaPen, FaHeart , FaShoppingCart, } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
-export default function ProductCard({ productId,images, name, price, description, stock,user }) {
-  const [IconHeart, setIconHeart] = useState(false);
-  const [IconShoppingCart, setIconShoppingCart] = useState(false);
+const server = process.env.REACT_APP_API_URL;
+export default function ProductCard({ productId,images, name, price, description, stock,user, IconHeart,IconCart  }) {
+  //const [IconHeart, setIconHeart] = useState(IconHeartView);
+  const { updateFavorites,updateCart } = useAuth();
+
+  //const [IconShoppingCart, setIconShoppingCart] = useState(false);
       const navigate = useNavigate();
   const settings = {
     dots: true,
@@ -24,15 +27,102 @@ export default function ProductCard({ productId,images, name, price, description
     autoplaySpeed: 5000, 
     adaptiveHeight: false,
   };
-  const handleCickIconHeart = () => {
-    setIconHeart(!IconHeart);
+  const handleCickIconHeart =  async() => {
+    if (!user?.id) return; // chặn nếu chưa login
+
+    //setIconHeart(!IconHeart);
+    
+     
+
+    if (!IconHeart) {
+      console.log("log check IconHeart khi trước đánh dấu thay đổi: ", IconHeart);
+      // Thêm sản phẩm vào yêu thích
+      try {
+        const response = await fetch(`${server}/users/${user.id}/favorite`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Failed to add to favorites');
+        const data = await response.json();
+        console.log("Thêm vào yêu thích :", data);
+      } catch (error) {
+        console.error('Error adding to favorites:', error);
+      }
+        updateFavorites(productId, 'add'); // ✅ Cập nhật context
+
+    } else {
+      console.log("log check IconHeart khi trước đánh dấu thay đổi: ", IconHeart);
+      // Xóa sản phẩm vào yêu thích
+      try {
+        const response = await fetch(`${server}/users/${user.id}/favorite`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Failed to delete to favorites');
+        const data = await response.json();
+        console.log("Bảng đã xóa: ", data);
+      } catch (error) {
+        console.error('Error adding to favorites:', error);
+      }
+        updateFavorites(productId, 'remove'); // ✅ Cập nhật context
+    }
+    
   }
-  const handleCickIconShoppingCart = () => {
-    setIconShoppingCart(!IconShoppingCart);
+  const handleCickIconShoppingCart = async () => {
+    if (!user?.id) return; // chặn nếu chưa login
+    //setIconShoppingCart(!IconShoppingCart);
+        if (!IconCart) {
+      console.log("log check IconCart khi trước đánh dấu thay đổi: ", IconCart);
+      // Thêm sản phẩm vào yêu thích
+      try {
+        const response = await fetch(`${server}/users/${user.id}/cart`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Failed to add to cart');
+        const data = await response.json();
+        console.log("Thêm vào giỏ :", data);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
+        updateCart(productId, 'add'); // ✅ Cập nhật context
+
+    } else {
+      console.log("log check IconCart khi trước đánh dấu thay đổi: ", IconCart);
+      // Xóa sản phẩm vào yêu thích
+      try {
+        const response = await fetch(`${server}/users/${user.id}/cart`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Failed to delete to cart');
+        const data = await response.json();
+        console.log("Giỏ sau khi xóa sản phẩm: ", data);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
+        updateCart(productId, 'remove'); // ✅ Cập nhật context
+    }
   }
   const handleClickViewDetail = () => {
   try {
-    navigate(`/products/${productId}`); // chuyển sang trang login
+    navigate(`/products/${productId}`); // chuyển sang xem chi tiết sản phẩm
     
     }catch(e) {
       console.error('Login error:', e);
@@ -73,7 +163,7 @@ export default function ProductCard({ productId,images, name, price, description
         </div>
       {/* Thẻ giữa mua ngay hoặc thêm vào giỏ hàng */}
       <div className="product-actions-FaShoppingCart">
-        {IconShoppingCart
+        {IconCart
          ?<div className="left">
           <FaShoppingCart className="ShoppingCart-added" onClick={handleCickIconShoppingCart} />
             <span>Đã thêm vào giỏ hàng</span>    

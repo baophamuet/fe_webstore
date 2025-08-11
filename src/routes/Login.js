@@ -33,6 +33,9 @@ function Login() {
   const handleClickRegister = () =>{
     navigate('/register')
   }
+  const handleClinkViewFavorite = () => {
+    navigate(`/users/${userLogin.id}/favorite`);
+  }
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
 
@@ -63,8 +66,10 @@ function Login() {
         let username= userdecoded.username
         let role = userdecoded.role
         let id  = userdecoded.id
+        let favoriteProducts = userdecoded.favoriteProducts || [];
+        let cartProducts = userdecoded.cartProducts || [];
         //console.log(">>>>>>> check data.user:  ", data);
-        login({username,role,id})
+        login({username,role,id,favoriteProducts, cartProducts});
 
         if (role!=='admin'){
           setTimeout(() => {
@@ -135,10 +140,11 @@ function Login() {
 
         </div>
         <div className="account-section">
-          <h2>Sản phẩm yêu thích</h2>
+          <h2>Sản phẩm</h2>
           <hr />
-          <p className='account-section-tym'>Sản phẩm yêu thích</p>
+          <p className='account-section-tym' onClick={handleClinkViewFavorite} >Sản phẩm yêu thích</p>
           <p>Lịch sử order</p>
+
         </div>
       </div>
 

@@ -13,6 +13,8 @@ import RegisterForm from '../routes/RegisterForm';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import ProductDetail from '../components/ProductDetail';
+import Favorite from '../routes/Favorite';
+import Cart from '../routes/Cart';
 
 function App() {
   return (
@@ -33,6 +35,9 @@ function App() {
               <Route path="/login/users/:id" element={<UserProfile />} />
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/products/:ProductId" element={<ProductDetail />} />
+              <Route path="/users/:id/favorite" element={<Favorite />} />
+              <Route path="/users/:id/cart" element={<Cart />} />
+
 
               
             </Routes>

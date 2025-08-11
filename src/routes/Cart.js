@@ -1,13 +1,12 @@
 import React, { useEffect, useState, } from "react";
-import { useLocation } from 'react-router-dom';
-
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
+import IconGoBack from '../components/IconGoBack';
+
 const server = process.env.REACT_APP_API_URL;
 export default function Home() {
   const [products, setProducts] = useState([]);
   const { user } = useAuth(); 
-  const { pathname } = useLocation();
 
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
   useEffect(() => {
@@ -16,9 +15,9 @@ export default function Home() {
     // Hàm lấy danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-            console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
+            console.log("URL đang gọi:", `${server}/users/${user.id}/cart`); // Kiểm tra URL
 
-        const response = await fetch(`${server}/products`, {
+        const response = await fetch(`${server}/users/${user.id}/cart`, {
           method: "GET", // hoặc không cần ghi vì GET là mặc định
            credentials: 'include', // Quan trọng
           headers: {
@@ -36,11 +35,16 @@ export default function Home() {
 
     // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
-  }, [pathname]);
+  }, [user]);
   
+    
+  if (user === null) {
+    return <h1>Vui lòng đăng nhập để xem giỏ hàn</h1>;
+  } 
+  else 
   return (
     <div className="px-8 py-6">
-    <h1>Xin chào các bạn đến với SHOPPINK</h1>
+    <h1>Giỏ hàng</h1>
     
     <div className="product-list">
         {products.map((product) => 
@@ -59,22 +63,16 @@ export default function Home() {
             description={product.description}
             stock={product.stock}
             user={user}
-            IconHeart= {
-              user ?
-              (user.favoriteProducts?.includes(product.id) ? true : false)
-              : false
-            }
-            IconCart= {
-              user ?
-              (user.cartProducts?.includes(product.id) ? true : false)
-              : false
-            }
+            IconHeart= {user.favoriteProducts?.includes(product.id.toString()) ? true : false}
+            IconShoppingCart={user.cartProducts?.includes(product.id.toString()) ? true : false}
             //colors={[]} // Nếu không có dữ liệu màu, để trống
             //onBuyNow={() => alert(`Mua ngay: ${product.name}`)}
             //onViewDetail={() => alert(`Xem chi tiết: ${product.name}`)}
           />
         ))}
       </div>
+        <br />
+    <IconGoBack/>
     </div>
   );
 }

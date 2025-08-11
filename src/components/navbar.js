@@ -4,6 +4,7 @@ import logo from "../assets/images/logoweb-white.png";
 import { NavLink } from "react-router-dom";
 import { FaSearch, FaUser, FaHeart, FaShoppingCart } from 'react-icons/fa';
 
+const userLogin= JSON.parse(localStorage.getItem('user')) || null;
 class Nav extends React.Component {
   constructor(props) {
     super(props);
@@ -13,6 +14,7 @@ class Nav extends React.Component {
     };
     this.navRef = React.createRef();
   }
+   
 
   componentDidMount() {
     if (this.navRef.current) {
@@ -59,8 +61,17 @@ class Nav extends React.Component {
           <NavLink to="/home">Home</NavLink>
           <NavLink to="/helps">Help</NavLink>
           <NavLink to="/login"><FaUser className="icon" /></NavLink>
-          <FaHeart className="icon" />
-          <FaShoppingCart className="icon" />
+          {
+            (userLogin!== null)
+            ? <NavLink to={`/users/${userLogin.id}/favorite`}> <FaHeart className="icon" /></NavLink>
+            : <NavLink to={`/users/:null/favorite`}> <FaHeart className="icon" /></NavLink>
+          }
+          {
+            (userLogin!== null)
+            ? <NavLink to={`/users/${userLogin.id}/cart`}> <FaShoppingCart className="icon" /></NavLink>
+            : <NavLink to={`/users/:null/cart`}> <FaShoppingCart className="icon" /></NavLink>
+          }
+          
         </div>
       </div>
     );
