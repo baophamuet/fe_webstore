@@ -6,7 +6,8 @@ import IconGoBack from '../components/IconGoBack';
 const server = process.env.REACT_APP_API_URL;
 export default function Home() {
   const [products, setProducts] = useState([]);
-  const { user } = useAuth(); 
+  const { user } = useAuth();
+  const [fulluser, setfulluser] = useState(null); 
 
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function Home() {
         const data = await response.json(); // Chuyển kết quả thành object
         console.log(">>>>>>>>>> Check data:    ",data)
         setProducts(data.data); // Lưu danh sách sản phẩm vào state
+        setfulluser(data.user); // Lưu full thông tin người dùng vào state
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
       }
@@ -63,8 +65,8 @@ export default function Home() {
             description={product.description}
             stock={product.stock}
             user={user}
-            IconHeart= {user.favoriteProducts?.includes(product.id.toString()) ? true : false}
-            IconShoppingCart={user.cartProducts?.includes(product.id.toString()) ? true : false}
+            IconHeart= {fulluser.favoriteProducts?.includes(product.id.toString()) ? true : false}
+            IconCart={fulluser.cartProducts?.includes(product.id.toString()) ? true : false}
             //colors={[]} // Nếu không có dữ liệu màu, để trống
             //onBuyNow={() => alert(`Mua ngay: ${product.name}`)}
             //onViewDetail={() => alert(`Xem chi tiết: ${product.name}`)}
