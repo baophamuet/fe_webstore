@@ -51,7 +51,8 @@ export default function Favorite() {
     <h1>Các sản phẩm đã thích</h1>
     
     <div className="product-list">
-        {products.map((product) => 
+        {fulluser && products.map((product) => 
+
         (
           <ProductCard
             key={product.id}
@@ -67,13 +68,17 @@ export default function Favorite() {
             description={product.description}
             stock={product.stock}
             user={user}
-            IconHeart= {fulluser.favoriteProducts?.includes(product.id.toString()) ? true : false}
-            IconCart={fulluser.cartProducts?.includes(product.id.toString()) ? true : false}
+           //IconHeart= {fulluser.favoriteProducts?.includes(product.id.toString()) ? true : false}
+            //IconCart={fulluser.cartProducts?.includes(product.id.toString()) ? true : false}
+            IconHeart={fulluser.favoriteProducts?.includes(Number(product.id)) ? true : false}
+            IconCart={fulluser.cartProducts?.includes(Number(product.id)) ? true : false}
+            
             //colors={[]} // Nếu không có dữ liệu màu, để trống
             //onBuyNow={() => alert(`Mua ngay: ${product.name}`)}
             //onViewDetail={() => alert(`Xem chi tiết: ${product.name}`)}
           />
-        ))}
+        ))
+        }
       </div>
     <br />
     <IconGoBack/>

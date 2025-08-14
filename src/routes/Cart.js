@@ -49,7 +49,7 @@ export default function Home() {
     <h1>Giỏ hàng</h1>
     
     <div className="product-list">
-        {products.map((product) => 
+        {fulluser &&products.map((product) => 
         (
           <ProductCard
             key={product.id}
@@ -65,8 +65,11 @@ export default function Home() {
             description={product.description}
             stock={product.stock}
             user={user}
-            IconHeart= {fulluser.favoriteProducts?.includes(product.id.toString()) ? true : false}
-            IconCart={fulluser.cartProducts?.includes(product.id.toString()) ? true : false}
+            //IconHeart= {fulluser.favoriteProducts?.includes(product.id.toString()) ? true : false}
+            //IconCart={fulluser.cartProducts?.includes(product.id.toString()) ? true : false}
+            IconHeart={fulluser.favoriteProducts?.includes(Number(product.id)) ? true : false}
+            IconCart={fulluser.cartProducts?.includes(Number(product.id)) ? true : false}
+            
             //colors={[]} // Nếu không có dữ liệu màu, để trống
             //onBuyNow={() => alert(`Mua ngay: ${product.name}`)}
             //onViewDetail={() => alert(`Xem chi tiết: ${product.name}`)}

@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/ProductCard.scss";
 import { useAuth } from "../routes/AuthContext";
-import { FaPen, FaHeart , FaShoppingCart, } from "react-icons/fa";
+import { FaPen, FaHeart , FaShoppingCart,FaTshirt } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
 const server = process.env.REACT_APP_API_URL;
@@ -128,6 +128,62 @@ export default function ProductCard({ productId,images, name, price, description
       console.error('Login error:', e);
     }
   }
+
+  const handleCickIconVituralOutfit = () => {
+  // Tạo input ẩn
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.style.display = "none";
+
+  // Khi người dùng chọn file
+  input.onchange = (e) => {
+    const modelFile = e.target.files[0];
+    if (!modelFile) {
+      console.error("Chưa chọn ảnh người mẫu");
+      return;
+    }
+
+    if (!images || images.length < 1) {   
+      console.error('Không có ảnh trang phục để thử đồ online');
+      return;
+    }
+
+    const outfitUrl = images[0]; // ảnh outfit có sẵn
+    const prompt = "Hãy kết hợp người mẫu từ ảnh khách hàng và trang phục từ ảnh 2, tạo ảnh người mẫu mặc trang phục tự nhiên và chân thực.";
+
+    const formData = new FormData();
+    formData.append("modelFile", modelFile); 
+    formData.append("outfitUrl", outfitUrl);
+    formData.append("prompt", prompt);
+
+    fetch(`${server}/combine-image`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          const imageUrl = data.imageUrl; 
+          window.open(imageUrl, "_blank");
+        } else {
+          console.error("Lỗi khi kết hợp ảnh:", data.error);
+        }
+      })
+      .catch((error) => {
+        console.error("Lỗi kết nối:", error);
+      });
+  };
+
+  // Gắn input vào DOM tạm thời và trigger click
+  document.body.appendChild(input);
+  input.click();
+
+  // Xoá đi sau khi dùng xong
+  input.remove();
+};
+
+
   return (
     <div className="product-card">
       {/* Slider ảnh sản phẩm */}
@@ -173,8 +229,26 @@ export default function ProductCard({ productId,images, name, price, description
             <span>Thêm vào giỏ hàng</span>    
         </div>
         }
+        </div>
+
+
+      {/* Thẻ HOT thử trang phụ online */}
+      <div className="product-actions-FaShoppingCart">
+        {images?.length > 0 && images[0] && images[1] 
+
+         ?<div className="left">
+            <FaTshirt className="ShoppingCart-added" onClick={handleCickIconVituralOutfit} />
+            <span>Thử đồ online nào!!!</span>    
+        </div>        
+         :<div className="left">
 
         </div>
+        }
+
+        </div>
+
+
+
 
       {/* Thông tin sản phẩm */}
       <div className="product-info">
