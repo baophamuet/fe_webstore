@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/Nav.scss";
 import logo from "../assets/images/logoweb-white.png";
 import { NavLink } from "react-router-dom";
-import { FaSearch, FaUser, FaHeart, FaShoppingCart } from 'react-icons/fa';
+import { FaSearch, FaUser, FaHeart, FaShoppingCart,FaLock } from 'react-icons/fa';
 
 const userLogin= JSON.parse(localStorage.getItem('user')) || null;
 class Nav extends React.Component {
@@ -60,7 +60,9 @@ class Nav extends React.Component {
         <div className="nav-links">
           <NavLink to="/home">Home</NavLink>
           <NavLink to="/helps">Help</NavLink>
+          <NavLink to="/privacy"><FaLock className="icon" /></NavLink>
           <NavLink to="/login"><FaUser className="icon" /></NavLink>
+          
           {
             (userLogin!== null)
             ? <NavLink to={`/users/${userLogin.id}/favorite`}> <FaHeart className="icon" /></NavLink>

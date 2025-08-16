@@ -63,7 +63,7 @@ export default function ProductDetail() {
     }, []);
 
   return (
-    <div className="product-card">
+    <div className="product-detail">
   {product ? (
     <>
       {/* Slider ảnh sản phẩm */}

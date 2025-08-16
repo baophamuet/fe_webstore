@@ -15,6 +15,10 @@ import ProductCard from '../components/ProductCard';
 import ProductDetail from '../components/ProductDetail';
 import Favorite from '../routes/Favorite';
 import Cart from '../routes/Cart';
+import Privacy from "../routes/Privacy";
+import HelpPage from "../routes/HelpPage";
+// ...
+<Route path="/privacy" element={<Privacy />} />
 
 function App() {
   return (
@@ -28,7 +32,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/test" element={<Mycomponent />} />
               <Route path="/home" element={<Home />} />
-              <Route path="/helps" element={<div>Contact Page Coming Soon</div>} />
+              <Route path="/helps" element={<HelpPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/login/dashboard" element={<Login />} />
               <Route path="/login/users" excact element={<ListUsers/>} />
@@ -37,7 +41,8 @@ function App() {
               <Route path="/products/:ProductId" element={<ProductDetail />} />
               <Route path="/users/:id/favorite" element={<Favorite />} />
               <Route path="/users/:id/cart" element={<Cart />} />
-
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/helps" element={<HelpPage />} />
 
               
             </Routes>
