@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext();
+const server = process.env.REACT_APP_API_URL;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -10,10 +11,23 @@ export function AuthProvider({ children }) {
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    try {
+      const response = await fetch(`${server}/logout`, {
+        method: 'POST',
+        credentials: 'include', //  cookie đính kèm
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      const data = await response.json();
+      console.log(">>>>>>> check Logout:  ", data);
+    }catch (error) {
+          console.error('Logout error:', error);
+        }
   };
 
   //✅ Hàm cập nhật favoriteProducts

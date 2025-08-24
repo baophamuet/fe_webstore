@@ -30,18 +30,23 @@
   flex: 1;
 }
 
-.edit-icon {
+.edit-actions {
   position: absolute;
   top: 10px;
   right: 10px;
+  display: flex;
+  flex-direction: column; // xếp dọc
+  gap: 6px; // khoảng cách giữa icon
+  z-index: 2;
+}
+
+.edit-icon {
   background-color: white;
   color: black;
   padding: 6px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 2;
-
-  font-size: 5px;
+  font-size: 16px; // icon size
   width: 32px;
   height: 32px;
   display: flex;
@@ -53,6 +58,7 @@
     transform: scale(1.1);
   }
 }
+
 
 .product-image img {
   width: 100%;
@@ -372,4 +378,56 @@
   list-style-type: none;  /* bỏ dấu chấm trước li (nếu muốn) */
   margin-top: 8px;
 }
+.confirm-box {
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 16px;
+  color: #222;
+
+  p {
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .btn-confirm {
+    background-color: #ef4444; // đỏ cảnh báo
+    color: #fff;
+
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+
+  .btn-cancel {
+    background-color: #e5e7eb; // xám
+    color: #111;
+
+    &:hover {
+      background-color: #d1d5db;
+    }
+  }
+}
+
 

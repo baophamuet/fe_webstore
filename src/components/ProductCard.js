@@ -5,22 +5,30 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/ProductCard.scss";
 import { useAuth } from "../routes/AuthContext";
-import { FaPen, FaHeart , FaShoppingCart,FaTshirt } from "react-icons/fa";
+import { FaPen, FaHeart , FaShoppingCart,FaTshirt,FaTrash, FaTrashAlt, FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import PortalModal from "./PortalModal"; // ✅ dùng PortalModal
+import EditProductModal from "../components/EditProductModal";
+import { TRUE } from "sass";
 
 const server = process.env.REACT_APP_API_URL;
 export default function ProductCard({ productId,images, name, price, description, stock,user, IconHeart,IconCart  }) {
   //const [IconHeart, setIconHeart] = useState(IconHeartView);
-  const { updateFavorites,updateCart } = useAuth();
+  const { logout, updateFavorites,updateCart } = useAuth();
 
   //const [IconShoppingCart, setIconShoppingCart] = useState(false);
-      const navigate = useNavigate();
+  
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [resultUrl, setResultUrl] = useState(null);
   const [showGuide, setShowGuide] = useState(false);
   const fileInputRef = useRef(null);
   const [showResult, setShowResult] = useState(false);
+  const [editProduct,setEditProduct]=  useState(false);
+  const [removeProduct,setRemoveProduct]=  useState(false);
+  const [authenticator,setAuthenticator]=  useState(false);
+  const [showConfirm,setshowConfirm]=  useState(false);
+
 
   const settings = {
     dots: true,
@@ -34,6 +42,33 @@ export default function ProductCard({ productId,images, name, price, description
     autoplaySpeed: 5000, 
     adaptiveHeight: false,
   };
+
+  const handleCickIconFaPen = () =>{
+    setEditProduct(!editProduct)
+  }
+  const handleCickIconFaTrash=()=>{
+    setRemoveProduct(!removeProduct)
+  }
+  let handleCickConfirmRemoveProduct = async ()=>{
+    if (removeProduct) {
+      console.log("Check đang hiện cửa sổ confirm: ", removeProduct);
+      try {
+        const response = await fetch(`${server}/products/${productId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Failed to remove Product');
+        const data = await response.json();
+        console.log("Check server sau khi thực hiện :", data);
+      } catch (error) {
+        console.error('Error adding to favorites:', error);
+      }
+    }
+  }
   const handleCickIconHeart =  async() => {
     if (!user?.id) return; // chặn nếu chưa login
 
@@ -137,8 +172,33 @@ export default function ProductCard({ productId,images, name, price, description
   }
 
   // Mở popup hướng dẫn
-  const handleCickIconVituralOutfit = () => {
-    if (loading) return;
+  const handleCickIconVituralOutfit = async (e) => {
+    if (loading)  return;
+    e.preventDefault();
+    
+        try {
+          const response = await fetch(`${server}/checkauthenticator`, {
+            method: 'GET',
+            credentials: 'include', //  cookie đính kèm
+            headers: {
+              'Content-Type': 'application/json'
+            },
+
+          });
+              
+          const data = await response.json();
+          console.log(">>>>>>> check authenticator:  ", data);
+    
+          if (response.ok && (data.status)) {
+            setAuthenticator(true)
+            setshowConfirm(false)
+          } else {
+            setAuthenticator(false)         
+            setshowConfirm(true)
+          }
+        } catch (error) {
+          console.error('authenticator error:', error);
+        }
     if (!images || images.length < 1) {
       console.error("Không có ảnh trang phục để thử đồ online");
       return;
@@ -192,6 +252,13 @@ export default function ProductCard({ productId,images, name, price, description
       .finally(() => setLoading(false));
   };
 
+  const handleCickConfirmAuthenticator = () =>{
+      logout() // gọi hàm xử lý logout, ví dụ xóa token
+      setAuthenticator(false)
+      setshowConfirm(false)
+      navigate('/login'); // chuyển sang trang login 
+      
+  }
   return (
     <div className="product-card">
       {/* Thẻ ẩn chọn ảnh  */}
@@ -206,7 +273,14 @@ export default function ProductCard({ productId,images, name, price, description
 
       {/* Slider ảnh sản phẩm */}
       <div className="product-image">
-        {user?.role ==="admin" ? <FaPen className="edit-icon"/> : null}
+        {user?.role ==="admin" 
+        ?
+        <div className="edit-actions">
+          <FaPen className="edit-icon" onClick={handleCickIconFaPen} />
+          <FaRegTrashAlt className="edit-icon" onClick={handleCickIconFaTrash} />
+        </div>
+
+        : null}
         {images?.length > 1 
         ?(
           <Slider {...settings}>
@@ -269,7 +343,11 @@ export default function ProductCard({ productId,images, name, price, description
       {/* Thông tin sản phẩm ... */}
 
       {/* Modal hướng dẫn qua PortalModal */}
-      <PortalModal open={showGuide} onClose={() => setShowGuide(false)}>
+      {
+      authenticator
+      ? <PortalModal open={showGuide} onClose={() => setShowGuide(false)}>
+
+        <div>
         <h4>Hướng dẫn trước khi thử đồ</h4>
         <ul>
           <li>Ảnh rõ nét, nên chỉ 1 người; nhìn thẳng, toàn thân càng tốt.</li>
@@ -285,8 +363,23 @@ export default function ProductCard({ productId,images, name, price, description
           <button className="btn-secondary" onClick={() => setShowGuide(false)}>Hủy</button>
           <button className="btn-primary" onClick={handleContinueFromGuide}>Tiếp tục chọn ảnh</button>
         </div>
+        </div>
       </PortalModal>
-      
+      :  <PortalModal open={showConfirm} onClick={() => setshowConfirm(false)}>
+      <div className="confirm-box">
+  <p>Hãy đăng nhập tài khoảng để thử tính năng nhé!</p>
+  <div className="actions">
+    <button className="btn-confirm" onClick={handleCickConfirmAuthenticator}>
+      Có
+    </button>
+    <button className="btn-cancel" onClick={() => setshowConfirm(false)}>
+      Không
+    </button>
+  </div>
+</div>
+
+  </PortalModal>
+}
       {/* Modal KẾT QUẢ sau khi xử lý */}
 <PortalModal open={showResult} onClose={() => setShowResult(false)}>
   <div className="tryon-result-modal">
@@ -320,6 +413,26 @@ export default function ProductCard({ productId,images, name, price, description
     </div>
   </div>
 </PortalModal>
+<PortalModal open={editProduct} onClose={() => setEditProduct(false)}>
+      <EditProductModal  productId={productId} open={editProduct} onClose={() => setEditProduct(false)} />
+</PortalModal>
+<PortalModal open={removeProduct} onClose={() => setRemoveProduct(false)}>
+      <div className="confirm-box">
+  <p>Bạn có chắc chắn xóa sản phẩm không!</p>
+  <div className="actions">
+    <button className="btn-confirm" onClick={handleCickConfirmRemoveProduct}>
+      Có
+    </button>
+    <button className="btn-cancel" onClick={() => setRemoveProduct(false)}>
+      Không
+    </button>
+  </div>
+</div>
+
+  </PortalModal>
+  
+
+
       
       {/* Thông tin sản phẩm */}
       <div className="product-info">

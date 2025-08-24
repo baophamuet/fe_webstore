@@ -8,13 +8,15 @@ import PortalModal from "../components/PortalModal"; // ✅ dùng PortalModal
 import AddProductModal from "../components/AddProductModal"
 
 const server = process.env.REACT_APP_API_URL;
-export default function Home() {
+export default function Home({productSearch}) {
   const [products, setProducts] = useState([]);
   const { user } = useAuth(); 
   const [userLogin, setUserLogin] = useState(null);
   const { pathname } = useLocation();
   const [addProduct,setAddProduct]=  useState(false)
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
+
+  // useEffect 1: chạy khi mount (fetch API)
   useEffect(() => {
     setUserLogin(user ?? null);
     window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
@@ -44,6 +46,11 @@ export default function Home() {
     // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
   }, [user]);
+
+
+
+
+
   const handleButtonAddProduct= ()=>{
     setAddProduct(true);
 
@@ -99,13 +106,12 @@ export default function Home() {
       </div>
 
       {<PortalModal open={addProduct} onClose={() => setAddProduct(false)}>
-  {userLogin == null 
+    {userLogin == null 
     ? <p>Bạn chưa đăng nhập!</p> 
     : userLogin.role =="user"
     ?<p>Bạn không phải quản trị viên nhé!</p> 
     : <AddProductModal/>}
-</PortalModal>
-
+    </PortalModal>
     }  
       
     </div>
