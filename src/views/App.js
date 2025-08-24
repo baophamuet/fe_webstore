@@ -1,4 +1,5 @@
 import { ToastContainer } from 'react-toastify';
+import React, { useState } from "react";
 import 'react-toastify/dist/ReactToastify.css';
 import './App.scss';
 import Mycomponent from './example/Mycomponent';
@@ -21,17 +22,19 @@ import HelpPage from "../routes/HelpPage";
 <Route path="/privacy" element={<Privacy />} />
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <AuthProvider>
       
       <BrowserRouter>
         <div className="App">
           <header className="App-header">
-            <Nav />
+            <Nav onSearch={setSearchQuery}/>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home searchQuery={searchQuery} />} />
               <Route path="/test" element={<Mycomponent />} />
-              <Route path="/home" element={<Home />} />
+              <Route path="/home" element={<Home searchQuery={searchQuery}/>} />
               <Route path="/helps" element={<HelpPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/login/dashboard" element={<Login />} />

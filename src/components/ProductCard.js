@@ -9,7 +9,7 @@ import { FaPen, FaHeart , FaShoppingCart,FaTshirt,FaTrash, FaTrashAlt, FaRegTras
 import { useNavigate } from 'react-router-dom';
 import PortalModal from "./PortalModal"; // ✅ dùng PortalModal
 import EditProductModal from "../components/EditProductModal";
-import { TRUE } from "sass";
+import imageCompression from "browser-image-compression";
 
 const server = process.env.REACT_APP_API_URL;
 export default function ProductCard({ productId,images, name, price, description, stock,user, IconHeart,IconCart  }) {
@@ -214,8 +214,20 @@ export default function ProductCard({ productId,images, name, price, description
     setTimeout(() => fileInputRef.current?.click(), 50);
   };
 
-  const handleFileChosen = (e) => {
-    const modelFile = e.target.files?.[0];
+  const handleFileChosen = async (e) => {
+    let modelFileOrigin = e.target.files?.[0];
+      // Cấu hình nén
+    const options = {
+      maxSizeMB: 0.2,         // 0.2MB = 200KB
+      maxWidthOrHeight: 1024, // resize nếu quá to
+      useWebWorker: true,
+    };
+    try {
+    const modelFile = await imageCompression(modelFileOrigin, options);
+    console.log("Trước:", modelFileOrigin.size / 1024, "KB");
+    console.log("Sau:", modelFile.size / 1024, "KB");
+
+  
     e.target.value = ""; // reset để chọn lại cùng file vẫn trigger
     if (!modelFile) {
       console.error("Chưa chọn ảnh người mẫu");
@@ -225,6 +237,7 @@ export default function ProductCard({ productId,images, name, price, description
       console.error("Không có ảnh trang phục để thử đồ online");
       return;
     }
+
 
     const outfitUrl = images[0];
     const prompt =
@@ -250,6 +263,9 @@ export default function ProductCard({ productId,images, name, price, description
       })
       .catch((err) => console.error("Lỗi kết nối:", err))
       .finally(() => setLoading(false));
+      } catch (error) {
+    console.error("Lỗi nén ảnh:", error);
+  }
   };
 
   const handleCickConfirmAuthenticator = () =>{
