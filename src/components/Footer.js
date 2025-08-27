@@ -3,6 +3,7 @@ import '../styles/Footer.scss';
 import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok, FaPlay } from 'react-icons/fa';
 import logo from "../assets/images/logoweb-white.png"
 
+const serverDomain = `${window.location.origin}/`;
 
 const Footer = () => {
   return (
@@ -47,19 +48,33 @@ const Footer = () => {
 
         <div className="footer-section">
           <h4>Kết nối</h4>
-          <ul>
+          {
+            serverDomain===`https://aiha.website/`
+            ? <ul>
             <a className="social-icons" href='https://www.facebook.com/baophamken'target="_blank" rel="noreferrer" ><FaFacebookF/></a>
             <a className="social-icons" href='https://www.instagram.com/baophamken'target="_blank" rel="noreferrer" ><FaInstagram/></a>
             <a className="social-icons" href='https://www.youtube.com/@pewpaidcover1930'target="_blank" rel="noreferrer" ><FaYoutube/></a>
             <a className="social-icons" href='https://www.tiktok.com/@baoy_ang' target="_blank" rel="noreferrer" ><FaTiktok/></a>
           </ul>
+          : <ul>
+            <a className="social-icons" href='https://www.facebook.com/Ladilazy'target="_blank" rel="noreferrer" ><FaFacebookF/></a>
+            <a className="social-icons" href='https://www.instagram.com/ladilaziii'target="_blank" rel="noreferrer" ><FaInstagram/></a>
+            <a className="social-icons" href='https://www.youtube.com/'target="_blank" rel="noreferrer" ><FaYoutube/></a>
+            <a className="social-icons" href='https://www.tiktok.com/' target="_blank" rel="noreferrer" ><FaTiktok/></a>
+          </ul>
+          }        
           <p>Đặt hàng: <strong></strong></p>
           <p>Góp ý / Khiếu nại: <strong></strong></p>
         </div>
       </div>
 
       <div className="footer-bottom-note">
-        <p>Thiết kế website bởi <a href="http://new.baophamuet.site" target="_blank" rel="noreferrer">new.baophamuet.site</a></p>
+        {
+          serverDomain===`https://aiha.website/`
+          ? <p>Thiết kế website bởi <a href="http://aiha.website/" target="_blank" rel="noreferrer">aiha.website/</a></p>
+          : <p>Thiết kế website bởi <a href="http://new.baophamuet.site" target="_blank" rel="noreferrer">new.baophamuet.site</a></p>
+        }
+        
       </div>
     </footer>
   );
