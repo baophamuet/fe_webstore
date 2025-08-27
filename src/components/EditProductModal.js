@@ -24,7 +24,9 @@ import "../styles/AddProductModal.scss"; // tái sử dụng style sẵn có
  * LƯU Ý: Đảm bảo Multer trên backend dùng upload.array("products_images", MAX)
  */
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 
 export default function EditProductModal({ open, onClose, productId, initialData, onUpdated }) {
   // (Có thể fetch danh mục từ API; tạm dùng cứng giống AddProductModal)

@@ -10,7 +10,7 @@ import "../styles/AddProductModal.scss"
 // TailwindCSS for styling.
 
 // --- Pure validation helper (exported for testability) ---
-const server = process.env.REACT_APP_API_URL;
+const server = `${window.location.origin}/api`;
 
 export function validateFields(form, images) {
   const er = {};

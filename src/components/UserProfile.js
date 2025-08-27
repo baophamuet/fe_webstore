@@ -9,7 +9,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import gender_other from "../assets/images/gender_other.png"
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 
 const UserProfile = () => {
     const { user,logout, } = useAuth(); // Lấy user từ AuthContext

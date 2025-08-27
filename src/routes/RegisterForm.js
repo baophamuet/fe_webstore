@@ -1,7 +1,9 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
 import "../styles/RegisterForm.scss";
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 const RegisterForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

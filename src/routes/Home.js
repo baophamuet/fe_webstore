@@ -7,7 +7,10 @@ import { FaPlus } from "react-icons/fa";
 import PortalModal from "../components/PortalModal"; // ✅ dùng PortalModal
 import AddProductModal from "../components/AddProductModal"
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
+
 export default function Home({searchQuery}) {
   const [products, setProducts] = useState([]);
   const { user } = useAuth(); 

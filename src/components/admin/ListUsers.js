@@ -5,7 +5,9 @@ import { FaArrowLeft, FaArrowRight  } from 'react-icons/fa';
 import IconGoBack from '../IconGoBack';
 import avatarDefault from '../../assets/images/gender_other.png'
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 const ListUsers = () => {
     const { user,logout } = useAuth(); // Lấy user từ AuthContext
     const [ Users, setUsers] = useState(null);

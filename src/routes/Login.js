@@ -10,7 +10,9 @@ import UserProfile from '../components/UserProfile';
 import { jwtDecode } from 'jwt-decode';
 
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 function Login() {
   const { login,logout } = useAuth();
   const [username, setUsername] = useState('');

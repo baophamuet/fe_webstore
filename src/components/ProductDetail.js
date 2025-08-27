@@ -10,7 +10,9 @@ import { useParams,useNavigate } from 'react-router-dom';
 import IconGoBack from "./IconGoBack";
  
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 
 
 export default function ProductDetail() {

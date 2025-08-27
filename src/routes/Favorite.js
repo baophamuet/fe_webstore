@@ -3,7 +3,9 @@ import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
 import IconGoBack from '../components/IconGoBack';
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 export default function Favorite() {
   const [products, setProducts] = useState([]);
   const [fulluser, setfulluser] = useState(null);

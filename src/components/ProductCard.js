@@ -11,7 +11,9 @@ import PortalModal from "./PortalModal"; // ✅ dùng PortalModal
 import EditProductModal from "../components/EditProductModal";
 import imageCompression from "browser-image-compression";
 
-const server = process.env.REACT_APP_API_URL;
+//const server = process.env.REACT_APP_API_URL;
+
+const server = `${window.location.origin}/api`;
 export default function ProductCard({ productId,images, name, price, description, stock,user, IconHeart,IconCart  }) {
   //const [IconHeart, setIconHeart] = useState(IconHeartView);
   const { logout, updateFavorites,updateCart } = useAuth();
