@@ -8,6 +8,8 @@ import { toast  } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import gender_other from "../assets/images/gender_other.png"
+import PortalModal from "../components/PortalModal"; // ✅ dùng PortalModal
+import AddProductModal from "../components/AddProductModal"
 
 //const server = process.env.REACT_APP_API_URL;
 
@@ -16,6 +18,7 @@ const server = `${window.location.origin}/api`;
 const UserProfile = () => {
     const { user,logout, } = useAuth(); // Lấy user từ AuthContext
     const [userData, setUserData] = useState(localStorage.getItem('user'));
+    const [buttonLogin,setButtonLogin]= useState(false)
     const [avatar, setavatar] = useState(null);
     const [preview, setPreview] = useState(false);
     const [editProfile, setEditProfile] = useState(false);
@@ -76,6 +79,14 @@ const UserProfile = () => {
           const data = await response.json(); // Chuyển kết quả thành object
           console.log(">>>>>>>>>> Check data:    ",data)
           setUserData(data.data); // Lưu thông tin user vào state
+          if (response.ok && data.status) {
+            setButtonLogin(false)
+            console.log(">>>>>>>>>> Check data.status:    ",data.status)
+          }
+            else {
+              setButtonLogin(true)
+             // console.log(">>>>>>>>>> Check data.status:    ",data.status)
+            }
           if (data.data.pathAvatar =='') 
             {setavatar(gender_other)
               console.log(">>>>>>>>>> Check gender_other:    ",gender_other)
@@ -177,6 +188,12 @@ const UserProfile = () => {
       setPreview(true); // nếu đã có ảnh chọn thì hiển thị preview
     }
   };
+    const handleCickConfirmAuthenticator = () =>{
+      logout() // gọi hàm xử lý logout, ví dụ xóa token
+      setButtonLogin(false)
+      navigate('/login'); // chuyển sang trang login 
+      
+  }
   return (
     <div className="user-profile">
         {!userData ? (
@@ -309,7 +326,20 @@ const UserProfile = () => {
       </div>
       </>  
     )}
-
+          <PortalModal open={buttonLogin} onClose={() => setButtonLogin(false)}>
+          <div className="confirm-box">
+  <p>Hãy đăng nhập lại để sử dụng nhé!</p>
+  <div className="actions">
+    <button className="btn-confirm" onClick={handleCickConfirmAuthenticator}>
+      Có
+    </button>
+    <button className="btn-cancel" onClick={() => setButtonLogin(false)}>
+      Không
+    </button>
+  </div>
+</div>
+          </PortalModal>
+          
     </div>
   );
 };

@@ -71,7 +71,7 @@ const Footer = () => {
       <div className="footer-bottom-note">
         {
           serverDomain===`https://aiha.website/`
-          ? <p>Thiết kế website bởi <a href="http://aiha.website/" target="_blank" rel="noreferrer">aiha.website/</a></p>
+          ? <p>Thiết kế website bởi <a href="http://aiha.website" target="_blank" rel="noreferrer">aiha.website</a></p>
           : <p>Thiết kế website bởi <a href="http://new.baophamuet.site" target="_blank" rel="noreferrer">new.baophamuet.site</a></p>
         }
         

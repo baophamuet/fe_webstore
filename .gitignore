@@ -7,3 +7,4 @@ public
 build
 .dockerignore
 .env
+note.txt
