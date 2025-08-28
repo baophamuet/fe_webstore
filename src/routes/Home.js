@@ -6,6 +6,7 @@ import { useAuth } from "./AuthContext";
 import { FaPlus } from "react-icons/fa";
 import PortalModal from "../components/PortalModal"; // ✅ dùng PortalModal
 import AddProductModal from "../components/AddProductModal"
+import Loading from "../components/Loading";
 
 //const server = process.env.REACT_APP_API_URL;
 
@@ -17,6 +18,7 @@ export default function Home({searchQuery}) {
   const [userLogin, setUserLogin] = useState(null);
   const { pathname } = useLocation();
   const [addProduct,setAddProduct]=  useState(false)
+  const [loading,setLoading]=  useState(false)
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
 
   // // useEffect 1: chạy khi mount (fetch API)
@@ -60,6 +62,7 @@ export default function Home({searchQuery}) {
         if (searchQuery && searchQuery.trim() !== "") {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         console.log("URL đang gọi:", `${server}/search`); // Kiểm tra URL
 
         const response = await fetch(`${server}/search`, {
@@ -77,7 +80,7 @@ export default function Home({searchQuery}) {
         const data = await response.json(); // Chuyển kết quả thành object
         console.log(">>>>>>>>>> Check data:    ",data)
         setProducts(data.data); // Lưu danh sách sản phẩm vào state
-
+        setLoading(false);
 
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
@@ -90,7 +93,8 @@ export default function Home({searchQuery}) {
     // Hàm lấy all danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-            console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
+        setLoading(true);
+        console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
 
         const response = await fetch(`${server}/products`, {
           method: "GET", // hoặc không cần ghi vì GET là mặc định
@@ -103,6 +107,7 @@ export default function Home({searchQuery}) {
         const data = await response.json(); // Chuyển kết quả thành object
         console.log(">>>>>>>>>> Check data:    ",data)
         setProducts(data.data); // Lưu danh sách sản phẩm vào state
+        setLoading(false);
 
 
       } catch (error) {
@@ -128,6 +133,9 @@ export default function Home({searchQuery}) {
 
     {searchQuery?<h2>Kết quả tìm kiếm cho: "{searchQuery}"</h2> :null }
     
+    {loading && (
+  <Loading/>
+)}
 
     
     <div className="product-list">
@@ -162,7 +170,10 @@ export default function Home({searchQuery}) {
             //onViewDetail={() => alert(`Xem chi tiết: ${product.name}`)}
           />
         ))}
-        <label className="product-card" 
+        {
+          userLogin
+          ? (userLogin.role =="admin"
+          ? <label className="product-card" 
           style={{
           color:"#ccc",
           display: "flex",
@@ -174,6 +185,9 @@ export default function Home({searchQuery}) {
           <FaPlus ></FaPlus>
           Thêm sản phẩm
         </label>
+        : null)
+        :null
+        }
       </div>
 
       {<PortalModal open={addProduct} onClose={() => setAddProduct(false)}>

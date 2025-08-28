@@ -51,17 +51,18 @@ const Footer = () => {
           {
             serverDomain===`https://aiha.website/`
             ? <ul>
-            <a className="social-icons" href='https://www.facebook.com/baophamken'target="_blank" rel="noreferrer" ><FaFacebookF/></a>
-            <a className="social-icons" href='https://www.instagram.com/baophamken'target="_blank" rel="noreferrer" ><FaInstagram/></a>
-            <a className="social-icons" href='https://www.youtube.com/@pewpaidcover1930'target="_blank" rel="noreferrer" ><FaYoutube/></a>
-            <a className="social-icons" href='https://www.tiktok.com/@baoy_ang' target="_blank" rel="noreferrer" ><FaTiktok/></a>
-          </ul>
-          : <ul>
             <a className="social-icons" href='https://www.facebook.com/Ladilazy'target="_blank" rel="noreferrer" ><FaFacebookF/></a>
             <a className="social-icons" href='https://www.instagram.com/ladilaziii'target="_blank" rel="noreferrer" ><FaInstagram/></a>
             <a className="social-icons" href='https://www.youtube.com/'target="_blank" rel="noreferrer" ><FaYoutube/></a>
             <a className="social-icons" href='https://www.tiktok.com/' target="_blank" rel="noreferrer" ><FaTiktok/></a>
           </ul>
+          : <ul>
+            <a className="social-icons" href='https://www.facebook.com/baophamken'target="_blank" rel="noreferrer" ><FaFacebookF/></a>
+            <a className="social-icons" href='https://www.instagram.com/baophamken'target="_blank" rel="noreferrer" ><FaInstagram/></a>
+            <a className="social-icons" href='https://www.youtube.com/@pewpaidcover1930'target="_blank" rel="noreferrer" ><FaYoutube/></a>
+            <a className="social-icons" href='https://www.tiktok.com/@baoy_ang' target="_blank" rel="noreferrer" ><FaTiktok/></a>
+          </ul>
+
           }        
           <p>Đặt hàng: <strong></strong></p>
           <p>Góp ý / Khiếu nại: <strong></strong></p>

@@ -290,7 +290,7 @@ export default function ProductCard({ productId,images, name, price, description
 />
 
       {/* Slider ảnh sản phẩm */}
-      <div className="product-image">
+      <div className="product-image" onClick={handleClickViewDetail}>
         {user?.role ==="admin" 
         ?
         <div className="edit-actions">
