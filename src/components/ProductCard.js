@@ -45,10 +45,12 @@ export default function ProductCard({ productId,images, name, price, description
     adaptiveHeight: false,
   };
 
-  const handleCickIconFaPen = () =>{
+  const handleCickIconFaPen = (e) =>{
+    e.stopPropagation();
     setEditProduct(!editProduct)
   }
-  const handleCickIconFaTrash=()=>{
+  const handleCickIconFaTrash=(e)=>{
+    e.stopPropagation();
     setRemoveProduct(!removeProduct)
   }
   let handleCickConfirmRemoveProduct = async ()=>{
@@ -71,7 +73,8 @@ export default function ProductCard({ productId,images, name, price, description
       }
     }
   }
-  const handleCickIconHeart =  async() => {
+  const handleCickIconHeart =  async(e) => {
+    e.stopPropagation();
     if (!user?.id) return; // chặn nếu chưa login
 
     //setIconHeart(!IconHeart);
@@ -120,7 +123,8 @@ export default function ProductCard({ productId,images, name, price, description
     }
     
   }
-  const handleCickIconShoppingCart = async () => {
+  const handleCickIconShoppingCart = async (e) => {
+    e.stopPropagation();
     if (!user?.id) return; // chặn nếu chưa login
     //setIconShoppingCart(!IconShoppingCart);
         if (!IconCart) {
@@ -164,7 +168,8 @@ export default function ProductCard({ productId,images, name, price, description
         updateCart(productId, 'remove'); // ✅ Cập nhật context
     }
   }
-  const handleClickViewDetail = () => {
+  const handleClickViewDetail = (e) => {
+  e.stopPropagation();
   try {
     navigate(`/products/${productId}`); // chuyển sang xem chi tiết sản phẩm
     
