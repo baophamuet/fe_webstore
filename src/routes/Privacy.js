@@ -40,7 +40,7 @@ export default function Privacy() {
 
           <p className="muted">
             Nếu có bất kỳ thắc mắc nào liên quan đến Chính sách bảo mật, vui
-            lòng liên hệ với chúng tôi theo email: support@baophamuet.site
+            lòng liên hệ với chúng tôi theo email: support@aiha.website
           </p>
         </div>
       </article>

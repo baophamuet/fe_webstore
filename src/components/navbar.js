@@ -81,7 +81,7 @@ export default function Nav({ onSearch }) {
             <FaHeart className="icon" />
           </NavLink>
         ) : (
-          <NavLink to="/login">
+          <NavLink to={`/users/null/favorite`}>
             <FaHeart className="icon" />
           </NavLink>
         )}
@@ -91,7 +91,7 @@ export default function Nav({ onSearch }) {
             <FaShoppingCart className="icon" />
           </NavLink>
         ) : (
-          <NavLink to="/login">
+          <NavLink to={`/users/null/cart`}>
             <FaShoppingCart className="icon" />
           </NavLink>
         )}

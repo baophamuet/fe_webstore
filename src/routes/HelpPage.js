@@ -83,9 +83,9 @@ export default function HelpPage() {
         <h2>📞 Liên hệ khi gặp vấn đề</h2>
         <p>Nếu bạn gặp lỗi hoặc cần hỗ trợ, vui lòng liên hệ:</p>
         <ul>
-          <li>Email: <a href="mailto:support@baophamuet.site">support@baophamuet.site</a></li>
-          <li>Hotline: <a href="tel:+84936757962">0936757962</a></li>
-          <li>Fanpage: <a href="https://www.facebook.com/baophamken" target="_blank" rel="noreferrer">Facebook</a></li>
+          <li>Email: <a href="mailto:support@aiha.website">support@aiha.website</a></li>
+          <li>Hotline: <a href="tel:+89327633389">0327633389</a></li>
+          <li>Fanpage: <a href="https://www.facebook.com/Ladilazy" target="_blank" rel="noreferrer">Facebook</a></li>
         </ul>
       </section>
 

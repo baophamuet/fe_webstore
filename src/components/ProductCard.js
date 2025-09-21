@@ -68,10 +68,16 @@ export default function ProductCard({ productId,images, name, price, description
         if (!response.ok) throw new Error('Failed to remove Product');
         const data = await response.json();
         console.log("Check server sau khi thực hiện :", data);
+        setRemoveProduct(false);
+        const x = window.scrollX; // vị trí ngang
+        const y = window.scrollY; // vị trí dọc
+        window.location.reload(); // reload trang
+        window.scrollTo(x, y); // quay lại vị trí cũ
       } catch (error) {
         console.error('Error adding to favorites:', error);
       }
     }
+    
   }
   const handleCickIconHeart =  async(e) => {
     e.stopPropagation();
@@ -421,7 +427,12 @@ export default function ProductCard({ productId,images, name, price, description
       <button className="btn-secondary" onClick={() => setShowResult(false)}>Đóng</button>
       {resultUrl && (
         <>
-          <a className="btn-primary" href={resultUrl} download>Tải xuống</a>
+          
+          <a
+          className="btn-primary"
+          href={`${server}/download/tryon/${resultUrl.split("/").pop()}`} // ví dụ http://localhost:8080/download/tryon/combine-....png
+          > Tải xuống</a>
+          
           <button
             className="btn-primary"
             onClick={() => {

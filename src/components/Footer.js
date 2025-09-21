@@ -20,7 +20,7 @@ const Footer = () => {
           <p><strong>SHOPPINK</strong></p>
           <p>Địa chỉ: Hà Nội</p>
           <p>Mã số doanh nghiệp: </p>
-          <p>Điện thoại: 0936.75.79.62</p>
+          <p>Điện thoại: 0327.63.33.89</p>
         </div>
 
         <div className="footer-section">

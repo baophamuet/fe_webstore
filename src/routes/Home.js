@@ -20,7 +20,6 @@ export default function Home({searchQuery}) {
   const [addProduct,setAddProduct]=  useState(false)
   const [loading,setLoading]=  useState(false)
   const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
-
   // // useEffect 1: chạy khi mount (fetch API)
   // useEffect(() => {
   //   setUserLogin(user ?? null);
@@ -118,7 +117,7 @@ export default function Home({searchQuery}) {
     // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
     }
-  }, [user,searchQuery]);
+  }, [user,searchQuery,]);
 
 
 
@@ -195,7 +194,7 @@ export default function Home({searchQuery}) {
     ? <p>Bạn chưa đăng nhập!</p> 
     : userLogin.role =="user"
     ?<p>Bạn không phải quản trị viên nhé!</p> 
-    : <AddProductModal/>}
+    : <AddProductModal />}
     </PortalModal>
     }  
       

@@ -10,6 +10,8 @@ import "../styles/AddProductModal.scss"
 // TailwindCSS for styling.
 
 // --- Pure validation helper (exported for testability) ---
+//const server = process.env.REACT_APP_API_URL;
+
 const server = `${window.location.origin}/api`;
 
 export function validateFields(form, images) {
@@ -35,7 +37,7 @@ export function validateFields(form, images) {
 // <AddProductModal open={open} onClose={() => setOpen(false)} onCreated={(p)=>console.log(p)} />
 
 
-export default function AddProductModal({ open, onClose, onCreated }) {
+export default function AddProductModal({ open, onClose, onCreated,onNotify  }) {
   // Mock categories — replace with API fetch if needed
   const categories = useMemo(
     () => [
@@ -138,6 +140,10 @@ export default function AddProductModal({ open, onClose, onCreated }) {
       previews.forEach((url) => URL.revokeObjectURL(url));
       setImages([]);
       setPreviews([]);
+        const x = window.scrollX; // vị trí ngang
+        const y = window.scrollY; // vị trí dọc
+        window.location.reload(); // reload trang
+        window.scrollTo(x, y); // quay lại vị trí cũ
     } catch (err) {
       setResult({ type: "error", message: `Lỗi khi thêm sản phẩm: ${err.message}` });
     } finally {
@@ -315,6 +321,7 @@ export default function AddProductModal({ open, onClose, onCreated }) {
             <button
               type="submit"
               disabled={submitting}
+             
               className="rounded-xl px-5 py-2 bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
             >
               {submitting ? "Đang lưu..." : "Lưu sản phẩm"}

@@ -1,145 +1,221 @@
-.user-table-container {
-  padding: 20px;
-  background-color: #f9f9f9;
-  overflow-x: auto;
+$bg-page:        #f9f9f9;
+$bg-card:        #fff;
+$bg-header:      #f0f0f0;
+$border-color:   #eee;
+$text-main:      #444;
+$text-muted:     #999;
+$text-strong:    #003366;
+
+$radius-lg:      10px;
+$shadow-sm:      0 0 10px rgba(0, 0, 0, 0.05);
+$shadow-md:      0 4px 12px rgba(0, 0, 0, 0.08);
+
+$cell-py:        12px;
+$cell-px:        16px;
+
+$avatar-size:    60px;
+
+// ---- Mixins tiện ích ----
+@mixin truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+@mixin table-cell-base {
+  padding: $cell-py $cell-px;
+  border-bottom: 1px solid $border-color;
+  color: $text-main;
+  vertical-align: middle;
+  overflow-wrap: anywhere; // thay cho word-wrap
+  font-size: clamp(0.875rem, 1.1vw, 1rem);
+}
+
+// ---- Container ----
+.user-table-container {
+  padding: 20px;
+  background-color: $bg-page;
+  overflow-x: auto; // hỗ trợ màn nhỏ
+}
+
+// ---- Bảng người dùng ----
 .user-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  table-layout: fixed; // ⚠️ Thêm dòng này để cột chia đều
+  background-color: $bg-card;
+  box-shadow: $shadow-sm;
+  border-radius: $radius-lg;
+  table-layout: fixed; // cột chia đều
 
+  // bo góc trên cho header
   thead {
-    background-color: #f0f0f0;
+    background-color: $bg-header;
 
     th {
-        padding: 12px 16px;
-        border-bottom: 1px solid #eee;
-        color: #444;
-        vertical-align: middle; // ⚠️ Căn giữa dọc cho đẹp
-        word-wrap: break-word; 
-        font-size: clamp(0.5rem, 1.2vw, 2rem); 
+      @include table-cell-base;
+      font-weight: 600;
     }
 
+    // bo góc cho 2 đầu nếu cần (khi không dùng wrapper khác)
+    tr:first-child {
+      th:first-child {
+        border-top-left-radius: $radius-lg;
+      }
+      th:last-child {
+        border-top-right-radius: $radius-lg;
+      }
+    }
   }
 
   tbody {
     tr {
+      transition: background-color 0.2s ease;
       &:hover {
         background-color: #fafafa;
       }
 
-      td {
-        padding: 12px 16px;
-        border-bottom: 1px solid #eee;
-        color: #444;
-        vertical-align: middle; // ⚠️ Căn giữa dọc cho đẹp
-        word-wrap: break-word;  // ⚠️ Ngắt dòng nếu dài
-        font-size: clamp(0.5rem, 1.2vw, 2rem); 
-
+      // trạng thái chọn hàng
+      &.selected {
+        background-color: #d0e8ff;
+        td {
+          font-weight: 600;
+          color: $text-strong;
+        }
       }
 
+      td {
+        @include table-cell-base;
+
+        // cột hẹp có thể chấm chấm
+        &.is-truncate {
+          @include truncate;
+        }
+      }
+
+      // vùng avatar trong ô đầu
       .avatar-section {
         display: flex;
         justify-content: center;
         align-items: center;
-
         .avatar {
-          width: 60px; // ⚠️ Giảm kích thước avatar
-          height: 60px;
+          width: $avatar-size;
+          height: $avatar-size;
           border-radius: 50%;
           object-fit: cover;
           box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s ease;
-
+          transition: transform 0.2s ease;
           &:hover {
             transform: scale(1.05);
           }
         }
       }
+    }
 
-      .empty-msg {
-        text-align: center;
-        color: #999;
-        font-style: italic;
-        padding: 20px;
-      }
+    // hàng rỗng / đang tải
+    .empty-msg {
+      text-align: center;
+      color: $text-muted;
+      font-style: italic;
+      padding: 20px;
     }
   }
 }
-.selected {
-  background-color: #d0e8ff !important; // hoặc màu bạn muốn
-  transition: background-color 0.3s ease;
 
-  td {
-    font-weight: 600;
-    color: #003366;
-  }
-  .user-profile {
-  max-width: 400px;
-  margin: 40px auto;
-  padding: 30px 20px;
+// ---- Profile trong PortalModal (KHÔNG lồng trong .selected) ----
+.user-profile {
+  max-width: 420px;
+  margin: 24px auto;
+  padding: 24px 20px;
   background-color: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  font-family: "Segoe UI", sans-serif;
+  box-shadow: $shadow-md;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
   text-align: center;
-  color: #333; // ✅ màu chữ chính tối để dễ đọc
+  color: #333;
 
   .avatar-section {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
+    // JSX hiện tại dùng <img class="avatar" /> trực tiếp
     .avatar {
       width: 130px;
       height: 130px;
       border-radius: 50%;
       object-fit: cover;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: scale(1.05);
-      }
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      display: block;
+      margin: 0 auto;
     }
+  }
 
-    h2 {
-      margin-top: 12px;
-      margin-bottom: 4px;
-      font-size: 20px;
-      font-weight: 600;
-      color: #222;
-    }
+  h2 {
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+  }
 
-    p {
-      font-size: 14px;
-      color: #777;
+  p {
+    margin: 8px 0;
+    font-size: 16px;
+    strong {
+      font-weight: 700;
     }
   }
 
   .info-section {
     text-align: left;
-    margin-top: 10px;
+    margin-top: 12px;
 
     p {
-        margin: 10px 0;
-        font-size: 16px;
-        cursor: pointer;
-
-        strong {
-          font-weight: bold;
-        }
-
-        &:hover {
-          color: #0077cc;
-        }
+      margin: 8px 0;
+      font-size: 16px;
+      line-height: 1.45;
+      strong {
+        font-weight: 700;
       }
+    }
   }
 }
+
+// ---- Responsive nhỏ ----
+@media (max-width: 768px) {
+  .user-table {
+    thead th {
+      font-size: 0.875rem;
+      padding: 10px 12px;
+    }
+    tbody td {
+      font-size: 0.875rem;
+      padding: 10px 12px;
+    }
+  }
+
+  .user-profile {
+    max-width: 95%;
+    padding: 20px 16px;
+    .avatar-section .avatar {
+      width: 112px;
+      height: 112px;
+    }
+  }
 }
 
+// ---- Responsive rất nhỏ ----
+@media (max-width: 480px) {
+  .user-table {
+    thead th,
+    tbody td {
+      font-size: 0.8125rem;
+      padding: 8px 10px;
+    }
+  }
 
-
-
+  .user-profile {
+    .avatar-section .avatar {
+      width: 96px;
+      height: 96px;
+    }
+  }
+}

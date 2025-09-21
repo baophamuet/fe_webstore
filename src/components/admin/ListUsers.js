@@ -4,6 +4,7 @@ import { useAuth } from '../../routes/AuthContext';
 import { FaArrowLeft, FaArrowRight  } from 'react-icons/fa';
 import IconGoBack from '../IconGoBack';
 import avatarDefault from '../../assets/images/gender_other.png'
+import PortalModal from "../PortalModal"; 
 
 //const server = process.env.REACT_APP_API_URL;
 
@@ -12,7 +13,7 @@ const ListUsers = () => {
     const { user,logout } = useAuth(); // Lấy user từ AuthContext
     const [ Users, setUsers] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
-
+    const [viewUser,setViewUser]= useState(false)
 
     useEffect(() => {
       // Hàm lấy danh sách sản phẩm
@@ -59,7 +60,9 @@ const ListUsers = () => {
           {Users && Users.length > 0 ? (
             Users.map((userview) => (
               <tr key={userview.id} 
-               onClick={() => setSelectedUser(userview)}
+               onClick={() => {setSelectedUser(userview)
+                setViewUser(true)
+               }}
                className={selectedUser?.id === userview.id ? 'selected' : ''} >
                 <td>
                   <div className="avatar-section">
@@ -88,6 +91,7 @@ const ListUsers = () => {
       </table>
       <IconGoBack/>
     {selectedUser && (
+      <PortalModal open={viewUser} onClose={() => setViewUser(false)}>
   <div className="user-profile">
               <div className="avatar-section">
           <img src={server+selectedUser.pathAvatar} alt="Avatar" className="avatar" />
@@ -100,7 +104,8 @@ const ListUsers = () => {
           <p><strong>Role:</strong> {selectedUser.role}</p>
 
         </div>
-        </div> 
+        </div>
+        </PortalModal> 
 )}
     </div>
   );
