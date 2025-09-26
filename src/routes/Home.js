@@ -117,7 +117,7 @@ export default function Home({searchQuery}) {
     // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
     }
-  }, [user,searchQuery,]);
+  }, [searchQuery,]);
 
 
 

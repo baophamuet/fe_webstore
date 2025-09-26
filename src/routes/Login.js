@@ -38,6 +38,9 @@ function Login() {
   const handleClinkViewFavorite = () => {
     navigate(`/users/${userLogin.id}/favorite`);
   }
+  const handleClinkViewOrders = () => {
+    navigate(`/users/${userLogin.id}/orders`);
+  }
   const handleSubmitLogin = async (e) => {
     e.preventDefault();
 
@@ -145,7 +148,7 @@ function Login() {
           <h2>Sản phẩm</h2>
           <hr />
           <p className='account-section-tym' onClick={handleClinkViewFavorite} >Sản phẩm yêu thích</p>
-          <p>Lịch sử order</p>
+          <p onClick={handleClinkViewOrders} >Lịch sử order</p>
 
         </div>
       </div>

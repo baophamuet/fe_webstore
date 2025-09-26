@@ -75,26 +75,9 @@ export default function Nav({ onSearch }) {
         <NavLink to="/helps">Help</NavLink>
         <NavLink to="/privacy"><FaLock className="icon" /></NavLink>
         <NavLink to="/login"><FaUser className="icon" /></NavLink>
-
-        {userLogin ? (
-          <NavLink to={`/users/${userLogin.id}/favorite`}>
-            <FaHeart className="icon" />
-          </NavLink>
-        ) : (
-          <NavLink to={`/users/null/favorite`}>
-            <FaHeart className="icon" />
-          </NavLink>
-        )}
-
-        {userLogin ? (
-          <NavLink to={`/users/${userLogin.id}/cart`}>
-            <FaShoppingCart className="icon" />
-          </NavLink>
-        ) : (
-          <NavLink to={`/users/null/cart`}>
-            <FaShoppingCart className="icon" />
-          </NavLink>
-        )}
+        <NavLink to={`/favorite`}> <FaHeart className="icon" /></NavLink>
+        <NavLink to={`/cart`}> <FaShoppingCart className="icon" /></NavLink>
+        
       </div>
     </div>
   );
