@@ -21,6 +21,7 @@ import HelpPage from "../routes/HelpPage";
 import Order from '../routes/Orders';
 import Orders from '../routes/Orders';
 import OrderDetail from '../routes/OrderDetail';
+import OrderCheckout from '../routes/OrderCheckout';
 // ...
 <Route path="/privacy" element={<Privacy />} />
 
@@ -51,6 +52,7 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/helps" element={<HelpPage />} />
               <Route path="/users/orders/:id" excact element={<OrderDetail />} />
+              <Route path="/ordercheckout/:id" excact element={<OrderCheckout />} />
 
               
             </Routes>
