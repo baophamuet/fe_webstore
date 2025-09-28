@@ -8,58 +8,103 @@ import '../styles/Cart.scss';
 //const server = process.env.REACT_APP_API_URL;
 
 const server = `${window.location.origin}/api`;
+
+function toNumberAny(v) {
+  if (typeof v === "number") return v;
+  if (v == null) return 0;
+  // bỏ mọi ký tự không phải số, dấu .,- (đề phòng "1.299 đ", "300đ", "1,299.00")
+  const s = String(v).replace(/[^\d.-]/g, "");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function normalizeImages(images) {
+  try {
+    if (Array.isArray(images)) return images;
+    if (typeof images === "string" && images.trim() !== "") {
+      let parsed = JSON.parse(images);
+      // trường hợp stringify 2 lần
+      if (typeof parsed === "string") {
+        try { parsed = JSON.parse(parsed); } catch {}
+      }
+      return Array.isArray(parsed) ? parsed : [];
+    }
+  } catch {}
+  return [];
+}
+
 export default function Cart() {
   const [productsCart, setProductsCart] = useState([]);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [fulluser, setfulluser] = useState(null); 
+  const [fulluser, setfulluser] = useState(null);
 
-  const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
   useEffect(() => {
-    window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
-
-    // Hàm lấy danh sách sản phẩm
+    if (!user) return;
+    window.scrollTo(0, 0);
     const fetchProducts = async () => {
       try {
-            console.log("URL đang gọi:", `${server}/users/${user.id}/cart`); // Kiểm tra URL
-
-        const response = await fetch(`${server}/users/${user.id}/cart`, {
-          method: "GET", // hoặc không cần ghi vì GET là mặc định
-           credentials: 'include', // Quan trọng
-          headers: {
-            "Content-Type": "application/json"
-          }
+        const url = `${server}/users/${user.id}/cart`;
+        console.log("URL đang gọi:", url);
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
         });
-        console.log("HTTP Status:", response.status); 
-        const data = await response.json(); // Chuyển kết quả thành object
-        console.log(">>>>>>>>>> Check data:    ",data)
-        setProductsCart(data.data); // Lưu danh sách sản phẩm vào state
-        setfulluser(data.user); // Lưu full thông tin người dùng vào state
+        const data = await response.json();
+        setProductsCart(data?.data || []);
+        setfulluser(data?.user || null);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
       }
     };
-
-    // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
   }, [user]);
-  
+
   const handleClinkViewOrders = () => {
     navigate(`/users/${user.id}/orders`);
-  } 
-  
-  //===========================
+  };
 
-   // Chuẩn hóa price về number
-  const products = useMemo(
-    () => (productsCart || []).map((p) => ({ ...p, _priceNumber: Number(p.price) || 0 })),
-    [productsCart]
-  );
+  // Chuẩn hoá product: ép price -> number, ép images -> arr, tính sẵn imgUrl
+  const products = useMemo(() => {
+    return (productsCart || []).map((p) => {
+      const imgs = normalizeImages(p?.images);
+      return {
+        ...p,
+        _priceNumber: toNumberAny(p?.price),
+        _imagesArr: imgs,
+        _imgUrl: imgs.length ? imgs[0] : null,
+      };
+    });
+  }, [productsCart]);
 
-  const [qtyMap, setQtyMap] = useState(() =>
-    Object.fromEntries(products.map((p) => [p.id, 1]))
-  );
+  // qtyMap luôn sync với danh sách sản phẩm (thêm item mới sẽ có qty=1)
+  const [qtyMap, setQtyMap] = useState({});
+  useEffect(() => {
+    setQtyMap((prev) => {
+      const next = { ...prev };
+      for (const p of products) {
+        if (next[p.id] == null) next[p.id] = 1;
+      }
+      // xoá qty của item đã không còn trong list
+      const ids = new Set(products.map((p) => p.id));
+      for (const k of Object.keys(next)) {
+        if (!ids.has(Number(k))) delete next[k];
+      }
+      return next;
+    });
+  }, [products]);
+
   const [selectedIds, setSelectedIds] = useState(() => new Set());
+  // bỏ chọn những id không còn tồn tại khi list đổi
+  useEffect(() => {
+    setSelectedIds((prev) => {
+      const ids = new Set(products.map((p) => p.id));
+      const next = new Set();
+      prev.forEach((id) => { if (ids.has(id)) next.add(id); });
+      return next;
+    });
+  }, [products]);
 
   const allSelected = products.length > 0 && selectedIds.size === products.length;
 
@@ -96,11 +141,10 @@ export default function Cart() {
     () =>
       products
         .filter((p) => selectedIds.has(p.id))
-        .map((p) => ({
-          ...p,
-          _qty: qtyMap[p.id] || 1,
-          _lineTotal: (qtyMap[p.id] || 1) * p._priceNumber,
-        })),
+        .map((p) => {
+          const _qty = qtyMap[p.id] || 1;
+          return { ...p, _qty, _lineTotal: _qty * p._priceNumber };
+        }),
     [products, selectedIds, qtyMap]
   );
 
@@ -113,120 +157,108 @@ export default function Cart() {
 
   const handleCreateOrder = () => {
     if (!selectedItems.length) return;
-    // Điều hướng sang trang tạo đơn như bạn yêu cầu
-    let id = Date.now();
-    navigate(`/users/orders/${id}`);
+    navigate(`/users/orders/${Date.now()}`);
   };
 
   if (user === null) {
     return <h1>Vui lòng đăng nhập để xem giỏ hàng</h1>;
-  } 
-  else 
+  }
+
   return (
     <div className="px-8 py-6">
-    <h1>Giỏ hàng</h1>
-    
-    <div className="order-cart">
-      <div className="order-cart__head">
-        <label className="check-all">
-          <input type="checkbox" checked={allSelected} onChange={toggleAll} />
-          <span >Chọn tất cả</span>
-        </label>
-      </div>
+      <h1>Giỏ hàng</h1>
 
-      <div className="order-cart__list">
-        {products.map((p) => {
-          const isChecked = selectedIds.has(p.id);
-          const qty = qtyMap[p.id] || 1;
+      <div className="order-cart">
+        <div className="order-cart__head">
+          <label className="check-all">
+            <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+            <span>Chọn tất cả</span>
+          </label>
+        </div>
 
-          // parse images ngay lúc render (style bạn yêu cầu)
-          let imgUrl = null;
-          try {
-            const arr = JSON.parse(p?.images || "[]");
-            imgUrl = Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
-          } catch {
-            imgUrl = null;
-          }
+        <div className="order-cart__list">
+          {products.map((p) => {
+            const isChecked = selectedIds.has(p.id);
+            const qty = qtyMap[p.id] || 1;
 
-          return (
-            <div className={`order-row ${isChecked ? "is-checked" : ""}`} key={p.id}>
-              <div className="order-row__left">
-                <div className="order-row__check">
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => toggleOne(p.id)}
-                    aria-label={`Chọn ${p.name}`}
-                  />
-                </div>
-
-                <div className="order-row__thumb">
-                  {imgUrl ? (
-                    <img src={imgUrl} alt={p.name} loading="lazy" />
-                  ) : (
-                    <div className="thumb--placeholder">No Image</div>
-                  )}
-                </div>
-
-                <div className="order-row__info">
-                  <div className="order-row__name">{p.name}</div>
-                  <div className="order-row__variant">Phân loại: —</div>
-
-                  {/* Stepper số lượng, giữ tính năng nhưng làm gọn */}
-                  <div className="qty">
-                    <button className="qty__btn" onClick={() => decQty(p.id)} aria-label="Giảm">
-                      −
-                    </button>
-                    
+            return (
+              <div className={`order-row ${isChecked ? "is-checked" : ""}`} key={p.id}>
+                <div className="order-row__left">
+                  <div className="order-row__check">
                     <input
-                      className="qty__input"
-                      type="number"
-                      min={0}
-                      max={p.stock ?? undefined}
-                      value={qty}
-                      onChange={(e) => setQty(p.id, e.target.value, p.stock)}
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => toggleOne(p.id)}
+                      aria-label={`Chọn ${p.name}`}
                     />
-                    <button
-                      className="qty__btn"
-                      onClick={() => incQty(p.id, p.stock)}
-                      aria-label="Tăng"
-                    >
-                      +
-                    </button>
+                  </div>
+
+                  <div className="order-row__thumb">
+                    {p._imgUrl ? (
+                      <img src={p._imgUrl} alt={p.name} loading="lazy" />
+                    ) : (
+                      <div className="thumb--placeholder">No Image</div>
+                    )}
+                  </div>
+
+                  <div className="order-row__info">
+                    <div className="order-row__name">{p.name}</div>
+                    <div className="order-row__variant">Phân loại: —</div>
+
+                    <div className="qty">
+                      <button className="qty__btn" onClick={() => decQty(p.id)} aria-label="Giảm">
+                        −
+                      </button>
+
+                      <input
+                        className="qty__input"
+                        type="number"
+                        min={0}
+                        max={p.stock ?? undefined}
+                        value={qty}
+                        onChange={(e) => setQty(p.id, e.target.value, p.stock)}
+                      />
+                      <button
+                        className="qty__btn"
+                        onClick={() => incQty(p.id, p.stock)}
+                        aria-label="Tăng"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="order-row__right">
-                <div className="unit-x-qty">
-                  {fmtPrice(p._priceNumber)} <span className="mul">×</span> {qty}
+                <div className="order-row__right">
+                  <div className="unit-x-qty">
+                    {fmtPrice(p._priceNumber)} <span className="mul">×</span> {qty}
+                  </div>
+                  <div className="line-total">{fmtPrice(qty * p._priceNumber)}</div>
                 </div>
-                <div className="line-total">{fmtPrice(qty * p._priceNumber)}</div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
-        {products.length === 0 && <div className="empty">Giỏ hàng trống.</div>}
-      </div>
-
-      <div className="order-cart__footer">
-        <div className="pay-summary">
-          <span>Thành tiền:</span>
-          <strong className="pay-total">{fmtPrice(totalPrice)}</strong>
+          {products.length === 0 && <div className="empty">Giỏ hàng trống.</div>}
         </div>
-        <button
-          className="btn-create"
-          disabled={selectedItems.length === 0}
-          onClick={handleCreateOrder}
-        >
-          Chuyển tạo đơn hàng
-        </button>
+
+        <div className="order-cart__footer">
+          <div className="pay-summary">
+            <span>Thành tiền:</span>
+            <strong className="pay-total">{fmtPrice(totalPrice)}</strong>
+          </div>
+          <button
+            className="btn-create"
+            disabled={selectedItems.length === 0}
+            onClick={handleCreateOrder}
+          >
+            Chuyển tạo đơn hàng
+          </button>
+        </div>
       </div>
-    </div>
-    
-    <h1 onClick={handleClinkViewOrders} >Lịch sử order</h1>
-    <IconGoBack/>
+
+      <h1 onClick={handleClinkViewOrders}>Lịch sử order</h1>
+      <IconGoBack />
     </div>
   );
 }

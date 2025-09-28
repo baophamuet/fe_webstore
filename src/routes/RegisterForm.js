@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "../styles/RegisterForm.scss";
 //const server = process.env.REACT_APP_API_URL;
 
@@ -74,7 +76,9 @@ const RegisterForm = () => {
         
         console.log("Kết quả:", result);
         if (result) {
-        // Reset form
+        if (result.status === true)
+        {
+          // Reset form
         setFormData({
           username: "",
           password: "",
@@ -83,7 +87,13 @@ const RegisterForm = () => {
           gender: { value: "male", label: "Nam" },
           role: "user",
         });
-        navigate('/login')
+          navigate('/login');
+          toast.success("Đăng ký thành công!");
+        }
+        else {
+          toast.error("Đăng ký không thành công!");
+        }
+         
         }
         else {
           alert("❌ Đăng ký thất bại: Đã tồn tại username");
