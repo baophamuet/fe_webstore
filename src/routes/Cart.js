@@ -9,7 +9,7 @@ import '../styles/Cart.scss';
 
 const server = `${window.location.origin}/api`;
 const STORAGE_KEY_ITEMS = "checkout_items";
-const STORAGE_KEY_TEMPID = "checkout_temp_id";
+
 
 function toNumberAny(v) {
   if (typeof v === "number") return v;
@@ -158,17 +158,16 @@ export default function Cart() {
   const fmtPrice = (n) => `${(n || 0).toLocaleString("vi-VN")} đ`;
 
   const handleCreateOrder = () => {
-    const id = Date.now().toString();
-    console.log("Tạo đơn tạm với id:", id, selectedItems);
+
     try {
       sessionStorage.setItem(STORAGE_KEY_ITEMS, JSON.stringify(selectedItems));
-      sessionStorage.setItem(STORAGE_KEY_TEMPID, id);
+
     } catch (e) {
       console.error("Không lưu được vào Storage:", e);
       return;
     }
     if (!selectedItems.length) return;
-    navigate(`/ordercheckout/${id}`);
+    navigate(`/ordercheckout/`);
   };
 
   if (user === null) {

@@ -3,14 +3,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import "../styles/OrderCheckout.scss";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 //const server = process.env.REACT_APP_API_URL;
 
 const server = `${window.location.origin}/api`;
 
 const STORAGE_KEY_ITEMS = "checkout_items";
-const STORAGE_KEY_TEMPID = "checkout_temp_id";
+
 
 function loadCheckoutItems() {
   try {
@@ -23,13 +24,7 @@ function loadCheckoutItems() {
   }
 }
 
-function loadTempId() {
-  try {
-    return sessionStorage.getItem(STORAGE_KEY_TEMPID) || "";
-  } catch {
-    return "";
-  }
-}
+
 
 /** Hàm fetch tạo đơn có timeout + gửi cookie */
 async function createOrder(payload,userId, { timeoutMs = 15000 } = {}) {
@@ -37,7 +32,7 @@ async function createOrder(payload,userId, { timeoutMs = 15000 } = {}) {
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
 
   try {
-    const res = await fetch(`${server}/users/${userId}/orders/${payload.temp_id}`, {
+    const res = await fetch(`${server}/users/${userId}/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include", // gửi cookie JWT, v.v.
@@ -48,19 +43,18 @@ async function createOrder(payload,userId, { timeoutMs = 15000 } = {}) {
     // HTTP lỗi
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
+      console.log(`Lỗi : `)
+     // throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
     }
 
-    const data = await res.json().catch(() => ({}));
+    const data = await res.json();
+    console.log( `check data sau khi tạo đơn`,data )
 
-    // Phổ biến BE của bạn: {status: true, data: {id: ...}}
     if (data?.status) {
-        return data.status;
+        return data.data;
     }
-    // Hoặc trả thẳng order: {id: ...}
-    if (data?.id) return data;
 
-    throw new Error("Phản hồi tạo đơn không hợp lệ.");
+   // throw new Error(`Phản hồi tạo đơn không hợp lệ. \n data.messagez: ${data.message} `);
   } finally {
     clearTimeout(t);
   }
@@ -72,23 +66,22 @@ export default function OrderCheckout() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+
+
   // Ưu tiên state nếu có, nhưng fallback sang sessionStorage
   const stateItems = location.state?.items;
   const items = Array.isArray(stateItems) && stateItems.length
     ? stateItems
     : loadCheckoutItems();
 
-  // Kiểm tra id tạm cho “nhất quán” URL vs storage (không bắt buộc)
-  const tempId = routeId || loadTempId();
+
 
   useEffect(() => {
     // Không có dữ liệu => quay về giỏ
-    if (!items.length) {
-      navigate("/cart", { replace: true });
-    }
+    
   }, [items, navigate]);
 
-  const [form, setForm] = useState({ phone: "", address: "" });
+  const [form, setForm] = useState({ phone: "", address: "" , paymentmethod: "COD" });
 
   const total = useMemo(
     () =>
@@ -110,9 +103,10 @@ export default function OrderCheckout() {
   if (!form.phone.trim() || !form.address.trim()) return;
 
   const payload = {
-    temp_id: tempId,             // lấy từ useParams()/session
+         // lấy từ useParams()/session
     phone: form.phone.trim(),
     address: form.address.trim(),
+    paymentmethod: form.paymentmethod,
     items: items,
     total_price: items.reduce((s, it) =>
           s + Number(it._priceNumber ?? it.price) * Number(it._qty ?? it.quantity ?? 1), 0)
@@ -124,10 +118,11 @@ export default function OrderCheckout() {
     const order = await createOrder(payload,user.id); // { id, ... }
     // dọn storage nếu dùng sessionStorage
     sessionStorage.removeItem("checkout_items");
-    sessionStorage.removeItem("checkout_temp_id");
 
+    toast.success(`Tạo đơn mã #${order.id} thành công!`);
     // điều hướng sang trang chi tiết đơn
     navigate(`/users/orders/${order.id}`);
+    
   } catch (err) {
     console.error(err);
     alert(err.message || "Tạo đơn thất bại. Vui lòng thử lại.");
@@ -164,7 +159,61 @@ export default function OrderCheckout() {
             rows={3}
           />
         </div>
+         {/* ✅ Phương thức thanh toán */}
+        <div className="form-row payment-method">
+          <label>Phương thức thanh toán</label>
+          <div className="options">
+            <label>
+              <input
+                type="radio"
+                name="paymentmethod"
+                value="COD"
+                checked={form.paymentmethod === "COD"}
+                onChange={onChange}
+              />
+              Thanh toán khi nhận hàng (COD) 
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="paymentmethod"
+                value="ONLINE"
+                checked={form.paymentmethod === "ONLINE"}
+                onChange={onChange}
+              />
+              Chuyển khoản trước
+            </label>
+          </div>
+          
+          {/* Nếu chọn COD => hiện hướng dẫn  */}
+          {form.paymentmethod === "COD" && (
+            <div className="ONLINE-info">
+              <p>Free ship cho đơn hàng > 500.000đ</p>
+              <p>Kiểm hàng thoải mái trước khi thanh toán</p>
+              <p>Hỗ trợ đổi hàng trong vòng 30 ngày</p>
+              <p>Chúng tôi sẽ <label>XÁC NHẬN</label> đơn hàng bằng TIN NHẮN SMS hoặc GỌI ĐIỆN. </p>
+              <p> Bạn vui lòng kiểm tra TIN NHẮN hoặc NGHE MÁY ngay khi đặt hàng thành công và CHỜ NHẬN HÀNG</p>
+            </div>
+          )}
 
+          {/* Nếu chọn ONLINE => hiện hướng dẫn + ảnh QR */}
+          {form.paymentmethod === "ONLINE" && (
+            <div className="ONLINE-info">
+              <img
+                src="/images/qr-ONLINE.png"
+                alt="QR chuyển khoản"
+                className="qr-img"
+              />
+              <p>
+                Vui lòng quét mã QR để chuyển khoản. Nội dung: <b>DON HANG CUA {user?.username}</b>
+              </p>
+              <p>
+                Chủ tài khoản: <b>NGUYEN VAN A</b> <br />
+                Số tài khoản: <b>123456789</b> - VietcomONLINE
+              </p>
+            </div>
+          )}
+        </div>
       </form>
 
     <div className="checkout-items">

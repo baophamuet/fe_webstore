@@ -52,7 +52,7 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/helps" element={<HelpPage />} />
               <Route path="/users/orders/:id" excact element={<OrderDetail />} />
-              <Route path="/ordercheckout/:id" excact element={<OrderCheckout />} />
+              <Route path="/ordercheckout" excact element={<OrderCheckout />} />
 
               
             </Routes>
