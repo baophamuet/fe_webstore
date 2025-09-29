@@ -93,7 +93,18 @@
 
       .unit-x-qty { color: #374151; }
       .unit-x-qty .mul { opacity: 0.7; margin: 0 4px; }
-      .line-total { font-weight: 800; font-size: 18px; text-decoration: underline; }
+      .line-total { color: #374151;font-weight: 800; font-size: 18px; text-decoration: underline; }
+      .btn-delete {
+      appearance: none; border: 0; border-radius: 12px;
+      padding: 0px 20px; font-weight: 500; cursor: pointer;
+      background: #bec3db; color: #333;
+      transition: filter .15s, transform .02s;
+      font-size: 20px;
+
+      &:hover { filter: brightness(.98); }
+      &:active { transform: translateY(1px); }
+      &:disabled { background: #d1d5db; cursor: not-allowed; }
+    }
     }
   }
 

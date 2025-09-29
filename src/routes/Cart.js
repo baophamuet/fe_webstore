@@ -40,6 +40,7 @@ export default function Cart() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [fulluser, setfulluser] = useState(null);
+  const { updateCart } = useAuth();
 
   useEffect(() => {
     if (!user) return;
@@ -169,6 +170,27 @@ export default function Cart() {
     if (!selectedItems.length) return;
     navigate(`/ordercheckout/`);
   };
+  const handleCickIconShoppingCart = async (productId) => {
+    
+    if (!user?.id) return; // chặn nếu chưa login
+      try {
+        const response = await fetch(`${server}/users/${user.id}/cart`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId })
+        });
+        if (!response.ok) throw new Error('Failed to delete to cart');
+        const data = await response.json();
+        console.log("Giỏ sau khi xóa sản phẩm: ", data);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      }
+        updateCart(productId, 'remove'); // ✅ Cập nhật context
+  
+}
 
   if (user === null) {
     return <h1>Vui lòng đăng nhập để xem giỏ hàng</h1>;
@@ -240,6 +262,7 @@ export default function Cart() {
                 </div>
 
                 <div className="order-row__right">
+                  <button className="btn-delete" onClick={()=> handleCickIconShoppingCart(p.id)}> Xóa </button>
                   <div className="unit-x-qty">
                     {fmtPrice(p._priceNumber)} <span className="mul">×</span> {qty}
                   </div>
