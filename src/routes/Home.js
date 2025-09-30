@@ -1,203 +1,253 @@
-import React, { useEffect, useState, } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation } from 'react-router-dom';
-
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
 import { FaPlus } from "react-icons/fa";
-import PortalModal from "../components/PortalModal"; // ✅ dùng PortalModal
-import AddProductModal from "../components/AddProductModal"
+import PortalModal from "../components/PortalModal";
+import AddProductModal from "../components/AddProductModal";
 import Loading from "../components/Loading";
+import "../styles/Home.scss";
 
 //const server = process.env.REACT_APP_API_URL;
 
 const server = `${window.location.origin}/api`;
-
-export default function Home({searchQuery}) {
-  const [products, setProducts] = useState([]);
-  const { user } = useAuth(); 
+export default function Home({ searchQuery }) {
+  const [rawProducts, setRawProducts] = useState([]);   // nguồn gốc
+  const [products, setProducts] = useState([]);         // sau khi lọc
+  const { user } = useAuth();
   const [userLogin, setUserLogin] = useState(null);
   const { pathname } = useLocation();
-  const [addProduct,setAddProduct]=  useState(false)
-  const [loading,setLoading]=  useState(false)
-  const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452"
-  // // useEffect 1: chạy khi mount (fetch API)
-  // useEffect(() => {
-  //   setUserLogin(user ?? null);
-  //   window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
-  //   // Hàm lấy all danh sách sản phẩm
-  //   const fetchProducts = async () => {
-  //     try {
-  //           console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
+  const [addProduct, setAddProduct] = useState(false);
+  const [loading, setLoading] = useState(false);
+    // Thay state categoryOptions thành object map id → label
+  const categoryLabel = {
+  1: "Áo",
+  2: "Quần",
+  3: "Giày dép",
+  4: "Khác",
+};
 
-  //       const response = await fetch(`${server}/products`, {
-  //         method: "GET", // hoặc không cần ghi vì GET là mặc định
-  //          credentials: 'include', // Quan trọng
-  //         headers: {
-  //           "Content-Type": "application/json"
-  //         }
-  //       });
-  //       console.log("HTTP Status:", response.status); 
-  //       const data = await response.json(); // Chuyển kết quả thành object
-  //       console.log(">>>>>>>>>> Check data:    ",data)
-  //       setProducts(data.data); // Lưu danh sách sản phẩm vào state
+  const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452";
 
+  // --- STATE cho bộ lọc ---
+  const [filters, setFilters] = useState({
+    category: "all",
+    priceMin: "",
+    priceMax: "",
+    inStock: "all",   // all | in | out
+    sort: "default",  // default | price_asc | price_desc | newest | oldest
+  });
 
-  //     } catch (error) {
-  //       console.error("Lỗi khi lấy danh sách sản phẩm:", error);
-  //     }
-  //   }; 
+  // Lấy danh mục từ dữ liệu hiện có (category_id hoặc category?.name)
+  const categoryOptions = useMemo(() => {
+    const set = new Set();
+    rawProducts.forEach(p => {
+      const id = p.category_id ?? p.category?.id ?? null;
+      if (id != null) set.add(String(id));
+    });
+    return Array.from(set);
+  }, [rawProducts]);
 
-  //   // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
-  //   fetchProducts();
-  // }, [user]);
-
-
-  //useEffect 2: chạy khi cập nhật 
   useEffect(() => {
-
     setUserLogin(user ?? null);
-    window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
-    // Hàm lấy danh sách sản phẩm
-        if (searchQuery && searchQuery.trim() !== "") {
+    window.scrollTo(0, 0);
+
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        console.log("URL đang gọi:", `${server}/search`); // Kiểm tra URL
+        const isSearch = !!(searchQuery && searchQuery.trim() !== "");
+        const url = isSearch ? `${server}/search` : `${server}/products`;
+        const opt = isSearch
+          ? {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ keyword: searchQuery }),
+            }
+          : {
+              method: "GET",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+            };
 
-        const response = await fetch(`${server}/search`, {
-          method: "POST", // hoặc không cần ghi vì GET là mặc định
-           credentials: 'include', // Quan trọng
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: searchQuery
-              ? JSON.stringify({ keyword: searchQuery })
-              : JSON.stringify({ keyword: null })
+        const res = await fetch(url, opt);
+        const data = await res.json();
 
-        });
-        console.log("HTTP Status:", response.status); 
-        const data = await response.json(); // Chuyển kết quả thành object
-        console.log(">>>>>>>>>> Check data:    ",data)
-        setProducts(data.data); // Lưu danh sách sản phẩm vào state
+        const list = Array.isArray(data?.data) ? data.data : [];
+        setRawProducts(list);
+        // áp filter lần đầu trên dữ liệu mới
+        setProducts(applyFilters(list, filters));
+      } catch (e) {
+        console.error("Lỗi khi lấy danh sách sản phẩm:", e);
+      } finally {
         setLoading(false);
-
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách sản phẩm:", error);
       }
     };
 
-    // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
-    fetchProducts();}
-    else {
-    // Hàm lấy all danh sách sản phẩm
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        console.log("URL đang gọi:", `${server}/products`); // Kiểm tra URL
-
-        const response = await fetch(`${server}/products`, {
-          method: "GET", // hoặc không cần ghi vì GET là mặc định
-           credentials: 'include', // Quan trọng
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-        console.log("HTTP Status:", response.status); 
-        const data = await response.json(); // Chuyển kết quả thành object
-        console.log(">>>>>>>>>> Check data:    ",data)
-        setProducts(data.data); // Lưu danh sách sản phẩm vào state
-        setLoading(false);
-
-
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách sản phẩm:", error);
-      }
-    }; 
-
-    // Gọi hàm lấy dữ liệu khi component được hiển thị lần đầu
     fetchProducts();
+  }, [searchQuery]);
+
+  // Hàm áp bộ lọc trên mảng
+  const applyFilters = (list, f) => {
+    let out = [...list];
+
+    // Lọc theo danh mục (nếu có category_id)
+    if (f.category !== "all") {
+      out = out.filter(p => String(p.category_id ?? p.category?.id ?? "") === f.category);
     }
-  }, [searchQuery,]);
 
+    // Lọc khoảng giá
+    const min = f.priceMin !== "" ? Number(f.priceMin) : null;
+    const max = f.priceMax !== "" ? Number(f.priceMax) : null;
+    if (min != null) out = out.filter(p => Number(p._priceNumber ?? p.price ?? 0) >= min);
+    if (max != null) out = out.filter(p => Number(p._priceNumber ?? p.price ?? 0) <= max);
 
+    // Lọc tồn kho
+    if (f.inStock === "in") out = out.filter(p => Number(p.stock ?? 0) > 0);
+    if (f.inStock === "out") out = out.filter(p => Number(p.stock ?? 0) <= 0);
 
+    // Sắp xếp
+    if (f.sort === "price_asc") {
+      out.sort((a, b) => Number(a._priceNumber ?? a.price ?? 0) - Number(b._priceNumber ?? b.price ?? 0));
+    } else if (f.sort === "price_desc") {
+      out.sort((a, b) => Number(b._priceNumber ?? b.price ?? 0) - Number(a._priceNumber ?? a.price ?? 0));
+    } else if (f.sort === "newest") {
+      out.sort((a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0));
+    } else if (f.sort === "oldest") {
+      out.sort((a, b) => new Date(a.created_at ?? 0) - new Date(b.created_at ?? 0));
+    }
 
-  const handleButtonAddProduct= ()=>{
-    setAddProduct(true);
+    return out;
+  };
 
-  }
+  // Khi bấm nút "Lọc"
+  const handleApply = () => {
+    setProducts(applyFilters(rawProducts, filters));
+  };
+
+  // Nếu muốn auto lọc khi thay đổi trường (không cần bấm nút),
+  // bỏ comment useEffect dưới:
+  // useEffect(() => {
+  //   setProducts(applyFilters(rawProducts, filters));
+  // }, [filters, rawProducts]);
+
+  const handleButtonAddProduct = () => setAddProduct(true);
+  
   return (
-    <div className="px-8 py-6">
-    <h1>Xin chào các bạn đến với SHOPPINK</h1>
+    <div className="home px-8 py-6">
+      <h1 className="home__title">Xin chào các bạn đến với SHOPPINK</h1>
+      {searchQuery ? (
+        <h2 className="home__subtitle">Kết quả tìm kiếm cho: "{searchQuery}"</h2>
+      ) : null}
 
-    {searchQuery?<h2>Kết quả tìm kiếm cho: "{searchQuery}"</h2> :null }
-    
-    {loading && (
-  <Loading/>
-)}
+      {/* --- Thanh bộ lọc --- */}
+      <div className="filter-bar">
+        {/* Danh mục */}
+        <select
+          value={filters.category}
+          onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
+          className="filter-select"
+        >
+          <option value="all">Tất cả danh mục</option>
+          {categoryOptions.map((id) => (
+            <option key={id} value={id}>
+              Danh mục #{categoryLabel[id] ?? id}
+            </option>
+          ))}
+        </select>
 
-    
-    <div className="product-list">
-        {products.map((product) => 
-        (
+        {/* Khoảng giá */}
+        <div className="filter-price">
+          <input
+            type="number"
+            inputMode="numeric"
+            placeholder="Giá từ"
+            value={filters.priceMin}
+            onChange={(e) => setFilters((f) => ({ ...f, priceMin: e.target.value }))}
+            className="filter-input"
+          />
+          <span className="filter-price__dash">—</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            placeholder="đến"
+            value={filters.priceMax}
+            onChange={(e) => setFilters((f) => ({ ...f, priceMax: e.target.value }))}
+            className="filter-input"
+          />
+        </div>
+
+        {/* Tồn kho */}
+        <select
+          value={filters.inStock}
+          onChange={(e) => setFilters((f) => ({ ...f, inStock: e.target.value }))}
+          className="filter-select"
+        >
+          <option value="all">Tất cả hàng</option>
+          <option value="in">Còn hàng</option>
+          <option value="out">Hết hàng</option>
+        </select>
+
+        {/* Sắp xếp */}
+        <select
+          value={filters.sort}
+          onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}
+          className="filter-select"
+        >
+          <option value="default">Mặc định</option>
+          <option value="price_asc">Giá tăng dần</option>
+          <option value="price_desc">Giá giảm dần</option>
+          <option value="newest">Mới nhất</option>
+          <option value="oldest">Cũ nhất</option>
+        </select>
+
+        <button onClick={handleApply} className="filter-apply-btn">
+          Lọc
+        </button>
+      </div>
+
+      {loading && <Loading />}
+
+      <div className="product-list">
+        {products.map((product) => (
           <ProductCard
             key={product.id}
             productId={product.id}
             images={
-                typeof product.images === "string"
-                ? (product.images.trim() !== "" ? JSON.parse(product.images) : [defaultImage])
+              typeof product.images === "string"
+                ? product.images.trim() !== ""
+                  ? JSON.parse(product.images)
+                  : [defaultImage]
                 : Array.isArray(product.images)
                 ? product.images
                 : [defaultImage]
             }
-            price={`${product.price? product.price : `Liên hệ chi tiết $`}$`}
+            price={`${product.price ? product.price : `Liên hệ chi tiết $`}$`}
             description={product.description}
             stock={product.stock}
             user={user}
-            IconHeart= {
-              user ?
-              (user.favoriteProducts?.includes(product.id) ? true : false)
-              : false
-            }
-            IconCart= {
-              user ?
-              (user.cartProducts?.includes(product.id) ? true : false)
-              : false
-            }
-            //colors={[]} // Nếu không có dữ liệu màu, để trống
-            //onBuyNow={() => alert(`Mua ngay: ${product.name}`)}
-            //onViewDetail={() => alert(`Xem chi tiết: ${product.name}`)}
+            IconHeart={user ? user.favoriteProducts?.includes(product.id) : false}
+            IconCart={user ? user.cartProducts?.includes(product.id) : false}
           />
         ))}
-        {
-          userLogin
-          ? (userLogin.role =="admin"
-          ? <label className="product-card" 
-          style={{
-          color:"#ccc",
-          display: "flex",
-          justifyContent: "center", // căn giữa ngang
-          alignItems: "center",     // căn giữa dọc
-        }}
-        onClick={handleButtonAddProduct}
-        > 
-          <FaPlus ></FaPlus>
-          Thêm sản phẩm
-        </label>
-        : null)
-        :null
-        }
+
+        {userLogin && userLogin.role === "admin" && (
+          <label className="product-card product-card--add" onClick={() => setAddProduct(true)}>
+            <FaPlus />
+            Thêm sản phẩm
+          </label>
+        )}
       </div>
 
-      {<PortalModal open={addProduct} onClose={() => setAddProduct(false)}>
-    {userLogin == null 
-    ? <p>Bạn chưa đăng nhập!</p> 
-    : userLogin.role =="user"
-    ?<p>Bạn không phải quản trị viên nhé!</p> 
-    : <AddProductModal />}
-    </PortalModal>
-    }  
-      
+      <PortalModal open={addProduct} onClose={() => setAddProduct(false)}>
+        {userLogin == null ? (
+          <p>Bạn chưa đăng nhập!</p>
+        ) : userLogin.role === "user" ? (
+          <p>Bạn không phải quản trị viên nhé!</p>
+        ) : (
+          <AddProductModal />
+        )}
+      </PortalModal>
     </div>
   );
 }

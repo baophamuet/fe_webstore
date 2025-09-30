@@ -36,7 +36,7 @@ function Login() {
     navigate('/register')
   }
   const handleClinkViewFavorite = () => {
-    navigate(`/users/${userLogin.id}/favorite`);
+    navigate(`/users/favorite`);
   }
   const handleClinkViewOrders = () => {
     navigate(`/users/${userLogin.id}/orders`);

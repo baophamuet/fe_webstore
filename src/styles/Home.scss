@@ -1,0 +1,141 @@
+/* ====== Home Page ====== */
+.home {
+  /* có thể giữ lại 2 util class nếu bạn đang dùng Tailwind; nếu không thì uncomment line dưới:
+  padding: 24px 32px;
+  */
+  --radius: 12px;
+  --gap: 12px;
+  --card-bg: #fff;
+  --muted: #666;
+  --line: #e5e7eb;
+  --brand: #4c8bf5;
+  --brand-hover: #3876e9;
+
+  &__title {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 8px;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+}
+
+/* ---------- Filter bar ---------- */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 12px 0 16px;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(76, 139, 245, 0.15);
+  }
+}
+
+.filter-price {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  &__dash {
+    opacity: 0.7;
+  }
+}
+
+.filter-input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  width: 120px;
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(76, 139, 245, 0.15);
+  }
+
+  /* Ẩn mũi tên tăng giảm trên Chrome */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.filter-apply-btn {
+  padding: 0px 20px;
+  border-radius: 12px;
+  border: none;
+  background: #1ABC9C;
+  color: #fff;
+  font-weight: 700;
+  font-size: 30px;
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.2s ease;
+
+  &:hover {
+    background: #17a589;
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+/* ---------- Product list ---------- */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @media (min-width: 960px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Thẻ thêm sản phẩm (admin) */
+.product-card {
+  &--add {
+    color: #bbb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fafafa;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    min-height: 220px;
+    gap: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+
+    svg {
+      font-size: 18px;
+    }
+
+    &:hover {
+      background: #f3f6ff;
+      border-color: #d6e2ff;
+      color: #7a8bb8;
+    }
+  }
+}

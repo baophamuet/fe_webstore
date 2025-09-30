@@ -18,10 +18,10 @@ import Favorite from '../routes/Favorite';
 import Cart from '../routes/Cart';
 import Privacy from "../routes/Privacy";
 import HelpPage from "../routes/HelpPage";
-import Order from '../routes/Orders';
 import Orders from '../routes/Orders';
 import OrderDetail from '../routes/OrderDetail';
 import OrderCheckout from '../routes/OrderCheckout';
+import ListOrders from '../components/admin/ListOrders';
 // ...
 <Route path="/privacy" element={<Privacy />} />
 
@@ -42,8 +42,11 @@ function App() {
               <Route path="/helps" element={<HelpPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/login/dashboard" element={<Login />} />
-              <Route path="/login/users" excact element={<ListUsers/>} />
-              <Route path="/login/users/:id" element={<UserProfile />} />
+              
+              <Route path="/admin/orders" excact element={<ListOrders/>} />
+              <Route path="/admin/profile" element={<UserProfile />} />
+              <Route path="/admin/users" excact element={<ListUsers/>} />
+              
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/products/:ProductId" element={<ProductDetail />} />
               <Route path="/favorite" element={<Favorite />} />

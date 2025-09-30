@@ -26,11 +26,12 @@ export default function Admin() {
         <h3 className="text-center">ADMIN</h3>
         <ul className="nav flex-column mt-4">
           <li className="nav-item"><a className="nav-link text-white" href="/login/dashboard">Dashboard</a></li>
-          <li className="nav-item"><a className="nav-link text-white" href="#">Tables</a></li>
+          
           <li className="nav-item"><a className="nav-link text-white" href="#">Charts</a></li>
+          <li className="nav-item"><a className="nav-link text-white" href="/admin/orders">Orders</a></li>
           <li className="nav-item"><a className="nav-link text-white"  
-          href={ (user) ? `/login/users/${user.id}` :`/login/user/`}>Account</a></li>
-          <li className="nav-item"><a className="nav-link text-white" href="/login/users">List Users</a></li>
+          href={ (user) ? `/admin/profile` :`/admin/profile`}>Account</a></li>
+          <li className="nav-item"><a className="nav-link text-white" href="/admin/users">List Users</a></li>
           <li className="nav-item"><a className="nav-link text-white" href="#">Settings</a></li>
           <p className="logout" onClick={handleChangeLogout}><FaSignOutAlt /> Đăng xuất</p>
         </ul>
