@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
 import { FaPlus } from "react-icons/fa";
@@ -12,36 +12,37 @@ import "../styles/Home.scss";
 
 const server = `${window.location.origin}/api`;
 export default function Home({ searchQuery }) {
-  const [rawProducts, setRawProducts] = useState([]);   // nguồn gốc
-  const [products, setProducts] = useState([]);         // sau khi lọc
+  const [rawProducts, setRawProducts] = useState([]); // nguồn gốc
+  const [products, setProducts] = useState([]); // sau khi lọc
   const { user } = useAuth();
   const [userLogin, setUserLogin] = useState(null);
   const { pathname } = useLocation();
   const [addProduct, setAddProduct] = useState(false);
   const [loading, setLoading] = useState(false);
-    // Thay state categoryOptions thành object map id → label
+  // Thay state categoryOptions thành object map id → label
   const categoryLabel = {
-  1: "Áo",
-  2: "Quần",
-  3: "Giày dép",
-  4: "Khác",
-};
+    1: "Áo",
+    2: "Quần",
+    3: "Giày dép",
+    4: "Khác",
+  };
 
-  const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452";
+  const defaultImage =
+    "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452";
 
   // --- STATE cho bộ lọc ---
   const [filters, setFilters] = useState({
     category: "all",
     priceMin: "",
     priceMax: "",
-    inStock: "all",   // all | in | out
-    sort: "default",  // default | price_asc | price_desc | newest | oldest
+    inStock: "all", // all | in | out
+    sort: "default", // default | price_asc | price_desc | newest | oldest
   });
 
   // Lấy danh mục từ dữ liệu hiện có (category_id hoặc category?.name)
   const categoryOptions = useMemo(() => {
     const set = new Set();
-    rawProducts.forEach(p => {
+    rawProducts.forEach((p) => {
       const id = p.category_id ?? p.category?.id ?? null;
       if (id != null) set.add(String(id));
     });
@@ -93,28 +94,44 @@ export default function Home({ searchQuery }) {
 
     // Lọc theo danh mục (nếu có category_id)
     if (f.category !== "all") {
-      out = out.filter(p => String(p.category_id ?? p.category?.id ?? "") === f.category);
+      out = out.filter(
+        (p) => String(p.category_id ?? p.category?.id ?? "") === f.category
+      );
     }
 
     // Lọc khoảng giá
     const min = f.priceMin !== "" ? Number(f.priceMin) : null;
     const max = f.priceMax !== "" ? Number(f.priceMax) : null;
-    if (min != null) out = out.filter(p => Number(p._priceNumber ?? p.price ?? 0) >= min);
-    if (max != null) out = out.filter(p => Number(p._priceNumber ?? p.price ?? 0) <= max);
+    if (min != null)
+      out = out.filter((p) => Number(p._priceNumber ?? p.price ?? 0) >= min);
+    if (max != null)
+      out = out.filter((p) => Number(p._priceNumber ?? p.price ?? 0) <= max);
 
     // Lọc tồn kho
-    if (f.inStock === "in") out = out.filter(p => Number(p.stock ?? 0) > 0);
-    if (f.inStock === "out") out = out.filter(p => Number(p.stock ?? 0) <= 0);
+    if (f.inStock === "in") out = out.filter((p) => Number(p.stock ?? 0) > 0);
+    if (f.inStock === "out") out = out.filter((p) => Number(p.stock ?? 0) <= 0);
 
     // Sắp xếp
     if (f.sort === "price_asc") {
-      out.sort((a, b) => Number(a._priceNumber ?? a.price ?? 0) - Number(b._priceNumber ?? b.price ?? 0));
+      out.sort(
+        (a, b) =>
+          Number(a._priceNumber ?? a.price ?? 0) -
+          Number(b._priceNumber ?? b.price ?? 0)
+      );
     } else if (f.sort === "price_desc") {
-      out.sort((a, b) => Number(b._priceNumber ?? b.price ?? 0) - Number(a._priceNumber ?? a.price ?? 0));
+      out.sort(
+        (a, b) =>
+          Number(b._priceNumber ?? b.price ?? 0) -
+          Number(a._priceNumber ?? a.price ?? 0)
+      );
     } else if (f.sort === "newest") {
-      out.sort((a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0));
+      out.sort(
+        (a, b) => new Date(b.created_at ?? 0) - new Date(a.created_at ?? 0)
+      );
     } else if (f.sort === "oldest") {
-      out.sort((a, b) => new Date(a.created_at ?? 0) - new Date(b.created_at ?? 0));
+      out.sort(
+        (a, b) => new Date(a.created_at ?? 0) - new Date(b.created_at ?? 0)
+      );
     }
 
     return out;
@@ -132,12 +149,14 @@ export default function Home({ searchQuery }) {
   // }, [filters, rawProducts]);
 
   const handleButtonAddProduct = () => setAddProduct(true);
-  
+
   return (
     <div className="home px-8 py-6">
       <h1 className="home__title">Xin chào các bạn đến với SHOPPINK</h1>
       {searchQuery ? (
-        <h2 className="home__subtitle">Kết quả tìm kiếm cho: "{searchQuery}"</h2>
+        <h2 className="home__subtitle">
+          Kết quả tìm kiếm cho: "{searchQuery}"
+        </h2>
       ) : null}
 
       {/* --- Thanh bộ lọc --- */}
@@ -145,7 +164,9 @@ export default function Home({ searchQuery }) {
         {/* Danh mục */}
         <select
           value={filters.category}
-          onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
+          onChange={(e) =>
+            setFilters((f) => ({ ...f, category: e.target.value }))
+          }
           className="filter-select"
         >
           <option value="all">Tất cả danh mục</option>
@@ -163,7 +184,9 @@ export default function Home({ searchQuery }) {
             inputMode="numeric"
             placeholder="Giá từ"
             value={filters.priceMin}
-            onChange={(e) => setFilters((f) => ({ ...f, priceMin: e.target.value }))}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, priceMin: e.target.value }))
+            }
             className="filter-input"
           />
           <span className="filter-price__dash">—</span>
@@ -172,7 +195,9 @@ export default function Home({ searchQuery }) {
             inputMode="numeric"
             placeholder="đến"
             value={filters.priceMax}
-            onChange={(e) => setFilters((f) => ({ ...f, priceMax: e.target.value }))}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, priceMax: e.target.value }))
+            }
             className="filter-input"
           />
         </div>
@@ -180,7 +205,9 @@ export default function Home({ searchQuery }) {
         {/* Tồn kho */}
         <select
           value={filters.inStock}
-          onChange={(e) => setFilters((f) => ({ ...f, inStock: e.target.value }))}
+          onChange={(e) =>
+            setFilters((f) => ({ ...f, inStock: e.target.value }))
+          }
           className="filter-select"
         >
           <option value="all">Tất cả hàng</option>
@@ -222,17 +249,24 @@ export default function Home({ searchQuery }) {
                 ? product.images
                 : [defaultImage]
             }
-            price={`${product.price ? product.price : `Liên hệ chi tiết $`}$`}
+            price={  product.price ? `${product.price.toLocaleString('vi-VN')} VNĐ`
+                                 : 'Liên hệ chi tiết'
+                  }
             description={product.description}
             stock={product.stock}
             user={user}
-            IconHeart={user ? user.favoriteProducts?.includes(product.id) : false}
+            IconHeart={
+              user ? user.favoriteProducts?.includes(product.id) : false
+            }
             IconCart={user ? user.cartProducts?.includes(product.id) : false}
           />
         ))}
 
         {userLogin && userLogin.role === "admin" && (
-          <label className="product-card product-card--add" onClick={() => setAddProduct(true)}>
+          <label
+            className="product-card product-card--add"
+            onClick={() => setAddProduct(true)}
+          >
             <FaPlus />
             Thêm sản phẩm
           </label>

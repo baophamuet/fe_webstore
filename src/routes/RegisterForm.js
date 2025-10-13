@@ -1,7 +1,7 @@
 import { useState } from "react";
-import {useNavigate} from "react-router-dom"
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../styles/RegisterForm.scss";
 //const server = process.env.REACT_APP_API_URL;
 
@@ -15,35 +15,35 @@ const RegisterForm = () => {
     full_name: "",
     gender: { value: "male", label: "Nam" },
     role: "user", // mặc định
-    avatar: null 
+    avatar: null,
   });
 
   const genderOptions = [
     { value: "male", label: "Nam" },
     { value: "female", label: "Nữ" },
-    { value: "other", label: "Khác" }
+    { value: "other", label: "Khác" },
   ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleGenderChange = (e) => {
-    const selected = genderOptions.find(g => g.value === e.target.value);
-    setFormData(prev => ({
+    const selected = genderOptions.find((g) => g.value === e.target.value);
+    setFormData((prev) => ({
       ...prev,
-      gender: selected
+      gender: selected,
     }));
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      avatar: file
+      avatar: file,
     }));
   };
 
@@ -64,42 +64,39 @@ const RegisterForm = () => {
     e.preventDefault();
 
     // TODO: Gửi API tại đây
-   try {
+    try {
       const response = await fetch(`${server}/user`, {
-        method: 'POST',
-        body: formDataToSend
+        method: "POST",
+        body: formDataToSend,
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        
         console.log("Kết quả:", result);
         if (result) {
-        if (result.status === true)
-        {
-          // Reset form
-        setFormData({
-          username: "",
-          password: "",
-          email: "",
-          full_name: "",
-          gender: { value: "male", label: "Nam" },
-          role: "user",
-        });
-          navigate('/login');
-          toast.success("Đăng ký thành công!");
-        }
-        else {
-          toast.error("Đăng ký không thành công!");
-        }
-         
-        }
-        else {
+          if (result.status === true) {
+            // Reset form
+            setFormData({
+              username: "",
+              password: "",
+              email: "",
+              full_name: "",
+              gender: { value: "male", label: "Nam" },
+              role: "user",
+            });
+            navigate("/login");
+            toast.success("Đăng ký thành công!");
+          } else {
+            toast.error("Đăng ký không thành công!");
+          }
+        } else {
           alert("❌ Đăng ký thất bại: Đã tồn tại username");
         }
       } else {
-        alert("❌ Đăng ký thất bại: " + (result.message || "Lỗi không xác định."));
+        alert(
+          "❌ Đăng ký thất bại: " + (result.message || "Lỗi không xác định.")
+        );
       }
     } catch (error) {
       console.error("Lỗi mạng hoặc máy chủ:", error);
@@ -111,29 +108,55 @@ const RegisterForm = () => {
     <form className="register-form" onSubmit={handleSubmit}>
       <h2>Đăng ký tài khoản</h2>
       <label>Username</label>
-      <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+      <input
+        type="text"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
+        required
+      />
 
       <label>Password</label>
-      <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+      <input
+        type="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
 
       <label>Email</label>
-      <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+      <input
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
 
       <label>Họ và tên</label>
-      <input type="text" name="full_name" value={formData.full_name} onChange={handleChange} required />
+      <input
+        type="text"
+        name="full_name"
+        value={formData.full_name}
+        onChange={handleChange}
+        required
+      />
 
       <label>Giới tính</label>
-      <select name="gender" value={formData.gender.value} onChange={handleGenderChange}>
-        {genderOptions.map(option => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+      <select
+        name="gender"
+        value={formData.gender.value}
+        onChange={handleGenderChange}
+      >
+        {genderOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
         ))}
       </select>
       <label>Chọn ảnh Avatar</label>
-      <input
-        type="file"
-        name="profile_avt"
-        onChange={handleFileChange}
-      />
+      <input type="file" name="profile_avt" onChange={handleFileChange} />
       <button type="submit">Đăng ký</button>
     </form>
   );

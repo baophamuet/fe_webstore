@@ -2,14 +2,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useAuth } from "./AuthContext";
-import IconGoBack from '../components/IconGoBack';
-import '../styles/Cart.scss';
+import IconGoBack from "../components/IconGoBack";
+import "../styles/Cart.scss";
 
 //const server = process.env.REACT_APP_API_URL;
 
 const server = `${window.location.origin}/api`;
 const STORAGE_KEY_ITEMS = "checkout_items";
-
 
 function toNumberAny(v) {
   if (typeof v === "number") return v;
@@ -27,7 +26,9 @@ function normalizeImages(images) {
       let parsed = JSON.parse(images);
       // trường hợp stringify 2 lần
       if (typeof parsed === "string") {
-        try { parsed = JSON.parse(parsed); } catch {}
+        try {
+          parsed = JSON.parse(parsed);
+        } catch {}
       }
       return Array.isArray(parsed) ? parsed : [];
     }
@@ -104,12 +105,15 @@ export default function Cart() {
     setSelectedIds((prev) => {
       const ids = new Set(products.map((p) => p.id));
       const next = new Set();
-      prev.forEach((id) => { if (ids.has(id)) next.add(id); });
+      prev.forEach((id) => {
+        if (ids.has(id)) next.add(id);
+      });
       return next;
     });
   }, [products]);
 
-  const allSelected = products.length > 0 && selectedIds.size === products.length;
+  const allSelected =
+    products.length > 0 && selectedIds.size === products.length;
 
   const toggleOne = (id) =>
     setSelectedIds((prev) => {
@@ -120,13 +124,18 @@ export default function Cart() {
 
   const toggleAll = () =>
     setSelectedIds((prev) =>
-      prev.size === products.length ? new Set() : new Set(products.map((p) => p.id))
+      prev.size === products.length
+        ? new Set()
+        : new Set(products.map((p) => p.id))
     );
 
   const incQty = (id, stock) =>
     setQtyMap((prev) => {
       const cur = prev[id] || 1;
-      return { ...prev, [id]: Math.min(cur + 1, stock ?? Number.MAX_SAFE_INTEGER) };
+      return {
+        ...prev,
+        [id]: Math.min(cur + 1, stock ?? Number.MAX_SAFE_INTEGER),
+      };
     });
 
   const decQty = (id) =>
@@ -136,7 +145,10 @@ export default function Cart() {
     });
 
   const setQty = (id, val, stock) => {
-    const n = Math.max(1, Math.min(Number(val) || 1, stock ?? Number.MAX_SAFE_INTEGER));
+    const n = Math.max(
+      1,
+      Math.min(Number(val) || 1, stock ?? Number.MAX_SAFE_INTEGER)
+    );
     setQtyMap((prev) => ({ ...prev, [id]: n }));
   };
 
@@ -159,10 +171,8 @@ export default function Cart() {
   const fmtPrice = (n) => `${(n || 0).toLocaleString("vi-VN")} đ`;
 
   const handleCreateOrder = () => {
-
     try {
       sessionStorage.setItem(STORAGE_KEY_ITEMS, JSON.stringify(selectedItems));
-
     } catch (e) {
       console.error("Không lưu được vào Storage:", e);
       return;
@@ -171,26 +181,24 @@ export default function Cart() {
     navigate(`/ordercheckout/`);
   };
   const handleCickIconShoppingCart = async (productId) => {
-    
     if (!user?.id) return; // chặn nếu chưa login
-      try {
-        const response = await fetch(`${server}/users/${user.id}/cart`, {
-          method: 'PUT',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ productId })
-        });
-        if (!response.ok) throw new Error('Failed to delete to cart');
-        const data = await response.json();
-        console.log("Giỏ sau khi xóa sản phẩm: ", data);
-      } catch (error) {
-        console.error('Error adding to cart:', error);
-      }
-        updateCart(productId, 'remove'); // ✅ Cập nhật context
-  
-}
+    try {
+      const response = await fetch(`${server}/users/${user.id}/cart`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId }),
+      });
+      if (!response.ok) throw new Error("Failed to delete to cart");
+      const data = await response.json();
+      console.log("Giỏ sau khi xóa sản phẩm: ", data);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+    updateCart(productId, "remove"); // ✅ Cập nhật context
+  };
 
   if (user === null) {
     return <h1>Vui lòng đăng nhập để xem giỏ hàng</h1>;
@@ -214,7 +222,10 @@ export default function Cart() {
             const qty = qtyMap[p.id] || 1;
 
             return (
-              <div className={`order-row ${isChecked ? "is-checked" : ""}`} key={p.id}>
+              <div
+                className={`order-row ${isChecked ? "is-checked" : ""}`}
+                key={p.id}
+              >
                 <div className="order-row__left">
                   <div className="order-row__check">
                     <input
@@ -238,7 +249,11 @@ export default function Cart() {
                     <div className="order-row__variant">Phân loại: —</div>
 
                     <div className="qty">
-                      <button className="qty__btn" onClick={() => decQty(p.id)} aria-label="Giảm">
+                      <button
+                        className="qty__btn"
+                        onClick={() => decQty(p.id)}
+                        aria-label="Giảm"
+                      >
                         −
                       </button>
 
@@ -262,17 +277,28 @@ export default function Cart() {
                 </div>
 
                 <div className="order-row__right">
-                  <button className="btn-delete" onClick={()=> handleCickIconShoppingCart(p.id)}> Xóa </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleCickIconShoppingCart(p.id)}
+                  >
+                    {" "}
+                    Xóa{" "}
+                  </button>
                   <div className="unit-x-qty">
-                    {fmtPrice(p._priceNumber)} <span className="mul">×</span> {qty}
+                    {fmtPrice(p._priceNumber)} <span className="mul">×</span>{" "}
+                    {qty}
                   </div>
-                  <div className="line-total">{fmtPrice(qty * p._priceNumber)}</div>
+                  <div className="line-total">
+                    {fmtPrice(qty * p._priceNumber)}
+                  </div>
                 </div>
               </div>
             );
           })}
 
-          {products.length === 0 && <div className="empty">Giỏ hàng trống.</div>}
+          {products.length === 0 && (
+            <div className="empty">Giỏ hàng trống.</div>
+          )}
         </div>
 
         <div className="order-cart__footer">

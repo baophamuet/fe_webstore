@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 const AuthContext = createContext();
 //const server = process.env.REACT_APP_API_URL;
@@ -10,113 +10,112 @@ export function AuthProvider({ children }) {
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = async () => {
     setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     try {
       const response = await fetch(`${server}/logout`, {
-        method: 'POST',
-        credentials: 'include', //  cookie đính kèm
+        method: "POST",
+        credentials: "include", //  cookie đính kèm
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
       });
       const data = await response.json();
       console.log(">>>>>>> check Logout:  ", data);
-    }catch (error) {
-          console.error('Logout error:', error);
-        }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   //✅ Hàm cập nhật favoriteProducts
-const updateFavorites = (productId, action) => {
-  setUser((prev) => {
-    if (!prev) return prev;
+  const updateFavorites = (productId, action) => {
+    setUser((prev) => {
+      if (!prev) return prev;
 
-    // Đảm bảo luôn lấy được mảng favorites hiện tại
-    const currentFav = Array.isArray(prev.favoriteProducts)
-      ? prev.favoriteProducts
-      : (() => {
-          try {
-            return JSON.parse(prev.favoriteProducts || "[]");
-          } catch {
-            return [];
-          }
-        })();
+      // Đảm bảo luôn lấy được mảng favorites hiện tại
+      const currentFav = Array.isArray(prev.favoriteProducts)
+        ? prev.favoriteProducts
+        : (() => {
+            try {
+              return JSON.parse(prev.favoriteProducts || "[]");
+            } catch {
+              return [];
+            }
+          })();
 
-    let newFavorites = [];
+      let newFavorites = [];
 
-    if (action === "add") {
-      // Tránh thêm trùng sản phẩm
-      if (!currentFav.includes(productId)) {
-        newFavorites = [...currentFav, productId];
-      } else {
-        newFavorites = currentFav;
+      if (action === "add") {
+        // Tránh thêm trùng sản phẩm
+        if (!currentFav.includes(productId)) {
+          newFavorites = [...currentFav, productId];
+        } else {
+          newFavorites = currentFav;
+        }
       }
-    }
 
-    if (action === "remove") {
-      // Chỉ giữ lại những id khác productId
-      newFavorites = currentFav.filter((id) => id !== productId);
-    }
+      if (action === "remove") {
+        // Chỉ giữ lại những id khác productId
+        newFavorites = currentFav.filter((id) => id !== productId);
+      }
 
-    const updatedUser = { ...prev, favoriteProducts: newFavorites };
+      const updatedUser = { ...prev, favoriteProducts: newFavorites };
 
-    // Lưu lại vào localStorage
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+      // Lưu lại vào localStorage
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-    return updatedUser;
-  });
-};
-
+      return updatedUser;
+    });
+  };
 
   // ✅ Hàm cập nhật cartProducts (tùy bạn dùng hay không)
   const updateCart = (productId, action) => {
-  setUser((prev) => {
-    if (!prev) return prev;
+    setUser((prev) => {
+      if (!prev) return prev;
 
-    // Đảm bảo luôn lấy được mảng cart hiện tại
-    const currentCart = Array.isArray(prev.cartProducts)
-      ? prev.cartProducts
-      : (() => {
-          try {
-            return JSON.parse(prev.cartProducts || "[]");
-          } catch {
-            return [];
-          }
-        })();
+      // Đảm bảo luôn lấy được mảng cart hiện tại
+      const currentCart = Array.isArray(prev.cartProducts)
+        ? prev.cartProducts
+        : (() => {
+            try {
+              return JSON.parse(prev.cartProducts || "[]");
+            } catch {
+              return [];
+            }
+          })();
 
-    let newCart = [];
+      let newCart = [];
 
-    if (action === "add") {
-      // Tránh thêm trùng sản phẩm
-      if (!currentCart.includes(productId)) {
-        newCart = [...currentCart, productId];
-      } else {
-        newCart = currentCart;
+      if (action === "add") {
+        // Tránh thêm trùng sản phẩm
+        if (!currentCart.includes(productId)) {
+          newCart = [...currentCart, productId];
+        } else {
+          newCart = currentCart;
+        }
       }
-    }
 
-    if (action === "remove") {
-      // Chỉ giữ lại những id khác productId
-      newCart = currentCart.filter((id) => id !== productId);
-    }
+      if (action === "remove") {
+        // Chỉ giữ lại những id khác productId
+        newCart = currentCart.filter((id) => id !== productId);
+      }
 
-    const updatedUser = { ...prev, cartProducts: newCart };
+      const updatedUser = { ...prev, cartProducts: newCart };
 
-    // Lưu lại vào localStorage
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+      // Lưu lại vào localStorage
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-    return updatedUser;
-  });
-};
+      return updatedUser;
+    });
+  };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -129,7 +128,7 @@ const updateFavorites = (productId, action) => {
         login,
         logout,
         updateFavorites, // ✅ thêm vào context
-        updateCart,      // ✅ thêm vào context
+        updateCart, // ✅ thêm vào context
       }}
     >
       {children}

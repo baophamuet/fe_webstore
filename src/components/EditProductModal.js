@@ -28,7 +28,13 @@ import "../styles/AddProductModal.scss"; // tái sử dụng style sẵn có
 
 const server = `${window.location.origin}/api`;
 
-export default function EditProductModal({ open, onClose, productId, initialData, onUpdated }) {
+export default function EditProductModal({
+  open,
+  onClose,
+  productId,
+  initialData,
+  onUpdated,
+}) {
   // (Có thể fetch danh mục từ API; tạm dùng cứng giống AddProductModal)
   const categories = useMemo(
     () => [
@@ -82,27 +88,35 @@ export default function EditProductModal({ open, onClose, productId, initialData
       return;
     }
 
-    console.log("Check productID:   ",productId)
+    console.log("Check productID:   ", productId);
     // fetch chi tiết sản phẩm nếu có productId
     if (!productId) return;
     (async () => {
       try {
-        const res = await fetch(`${server}/products/${productId}`, { credentials: "include" });
+        const res = await fetch(`${server}/products/${productId}`, {
+          credentials: "include",
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        console.log("Check editProduct:   ",data)
+        console.log("Check editProduct:   ", data);
         hydrate(data?.data || data); // linh hoạt tuỳ response
       } catch (e) {
-        setResult({ type: "error", message: `Không tải được sản phẩm #${productId}: ${e.message}` });
+        setResult({
+          type: "error",
+          message: `Không tải được sản phẩm #${productId}: ${e.message}`,
+        });
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, productId]);
 
   // giải phóng preview ảnh mới khi unmount
-  useEffect(() => () => {
-    newPreviews.forEach((u) => URL.revokeObjectURL(u));
-  }, [newPreviews]);
+  useEffect(
+    () => () => {
+      newPreviews.forEach((u) => URL.revokeObjectURL(u));
+    },
+    [newPreviews]
+  );
 
   const hydrate = (p) => {
     setForm({
@@ -112,7 +126,7 @@ export default function EditProductModal({ open, onClose, productId, initialData
       price: p?.price ?? "",
       stock: p?.stock ?? "",
     });
-    setExistingImages((p?.images) ? JSON.parse(p.images) : []);
+    setExistingImages(p?.images ? JSON.parse(p.images) : []);
     setRemoveIds([]);
     setNewImages([]);
     setNewPreviews([]);
@@ -157,10 +171,13 @@ export default function EditProductModal({ open, onClose, productId, initialData
     if (!form.name?.trim()) er.name = "Tên sản phẩm là bắt buộc";
     if (!form.category_id) er.category_id = "Vui lòng chọn danh mục";
     if (!form.price?.trim()) er.price = "Giá là bắt buộc";
-    if (form.stock !== "" && !/^[-+]?\d+$/.test(String(form.stock))) er.stock = "Tồn kho phải là số nguyên";
+    if (form.stock !== "" && !/^[-+]?\d+$/.test(String(form.stock)))
+      er.stock = "Tồn kho phải là số nguyên";
     // Cho phép không thêm ảnh mới nếu đã có ảnh cũ và không xoá hết
-    const remainAfterDelete = existingImages.filter((img) => !removeIds.includes(img.id));
-    if ((remainAfterDelete.length === 0) && newImages.length === 0) {
+    const remainAfterDelete = existingImages.filter(
+      (img) => !removeIds.includes(img.id)
+    );
+    if (remainAfterDelete.length === 0 && newImages.length === 0) {
       er.images = "Cần có ít nhất 1 ảnh (thêm ảnh mới hoặc giữ lại ảnh cũ)";
     }
     setErrors(er);
@@ -199,7 +216,11 @@ export default function EditProductModal({ open, onClose, productId, initialData
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      setResult({ type: "success", message: "Cập nhật sản phẩm thành công!", data });
+      setResult({
+        type: "success",
+        message: "Cập nhật sản phẩm thành công!",
+        data,
+      });
       onUpdated?.(data?.data || data);
     } catch (err) {
       setResult({ type: "error", message: `Lỗi khi cập nhật: ${err.message}` });
@@ -212,13 +233,17 @@ export default function EditProductModal({ open, onClose, productId, initialData
     <div className="apm-modal">
       <div className="mb-4">
         <h1 className="text-xl font-semibold">Chỉnh sửa sản phẩm</h1>
-        <p className="text-xs text-gray-500">Cập nhật thông tin rồi nhấn lưu.</p>
+        <p className="text-xs text-gray-500">
+          Cập nhật thông tin rồi nhấn lưu.
+        </p>
       </div>
 
       {result && (
         <div
           className={`mb-3 p-3 rounded-xl text-sm ${
-            result.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            result.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
           } font-bold`}
         >
           {result.message}
@@ -231,7 +256,9 @@ export default function EditProductModal({ open, onClose, productId, initialData
       >
         {/* Tên */}
         <div>
-          <label className="block text-sm font-medium mb-1">Tên sản phẩm *</label>
+          <label className="block text-sm font-medium mb-1">
+            Tên sản phẩm *
+          </label>
           <input
             name="name"
             type="text"
@@ -240,7 +267,9 @@ export default function EditProductModal({ open, onClose, productId, initialData
             placeholder="Ví dụ: Áo thun basic"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
+          {errors.name && (
+            <p className="text-xs text-red-600 mt-1">{errors.name}</p>
+          )}
         </div>
 
         {/* Danh mục */}
@@ -259,7 +288,9 @@ export default function EditProductModal({ open, onClose, productId, initialData
               </option>
             ))}
           </select>
-          {errors.category_id && <p className="text-xs text-red-600 mt-1">{errors.category_id}</p>}
+          {errors.category_id && (
+            <p className="text-xs text-red-600 mt-1">{errors.category_id}</p>
+          )}
         </div>
 
         {/* Giá (string) */}
@@ -273,7 +304,9 @@ export default function EditProductModal({ open, onClose, productId, initialData
             placeholder="VD: 199000 hoặc 'Liên hệ'"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.price && <p className="text-xs text-red-600 mt-1">{errors.price}</p>}
+          {errors.price && (
+            <p className="text-xs text-red-600 mt-1">{errors.price}</p>
+          )}
         </div>
 
         {/* Tồn kho (int) */}
@@ -288,7 +321,9 @@ export default function EditProductModal({ open, onClose, productId, initialData
             placeholder="VD: 100"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.stock && <p className="text-xs text-red-600 mt-1">{errors.stock}</p>}
+          {errors.stock && (
+            <p className="text-xs text-red-600 mt-1">{errors.stock}</p>
+          )}
         </div>
 
         {/* Mô tả (TEXT) */}
@@ -304,7 +339,6 @@ export default function EditProductModal({ open, onClose, productId, initialData
           />
         </div>
 
-
         {/* Ảnh mới (local) */}
         <div>
           <label className="block text-sm font-medium mb-1">Thêm ảnh mới</label>
@@ -315,7 +349,9 @@ export default function EditProductModal({ open, onClose, productId, initialData
             onChange={onPickFiles}
             className="w-full rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.images && <p className="text-xs text-red-600 mt-1">{errors.images}</p>}
+          {errors.images && (
+            <p className="text-xs text-red-600 mt-1">{errors.images}</p>
+          )}
 
           {newPreviews.length > 0 && (
             <div className="apm-product-image mt-2">
@@ -324,7 +360,11 @@ export default function EditProductModal({ open, onClose, productId, initialData
                   {newPreviews.map((src, idx) => (
                     <div key={idx} className="apm-image-slide">
                       <img src={src} alt={`new-${idx}`} loading="lazy" />
-                      <button type="button" className="apm-remove" onClick={() => removeNew(idx)}>
+                      <button
+                        type="button"
+                        className="apm-remove"
+                        onClick={() => removeNew(idx)}
+                      >
                         Xóa
                       </button>
                     </div>
@@ -333,7 +373,11 @@ export default function EditProductModal({ open, onClose, productId, initialData
               ) : (
                 <div className="apm-image-slide">
                   <img src={newPreviews[0]} alt="new-0" loading="lazy" />
-                  <button type="button" className="apm-remove" onClick={() => removeNew(0)}>
+                  <button
+                    type="button"
+                    className="apm-remove"
+                    onClick={() => removeNew(0)}
+                  >
                     Xóa
                   </button>
                 </div>
@@ -344,7 +388,11 @@ export default function EditProductModal({ open, onClose, productId, initialData
 
         {/* Actions */}
         <div className="flex items-center justify-between gap-3 pt-2">
-          <button type="button" onClick={onClose} className="rounded-xl px-4 py-2 border border-gray-300 hover:bg-gray-50">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl px-4 py-2 border border-gray-300 hover:bg-gray-50"
+          >
             Đóng
           </button>
           <div className="flex items-center gap-2">
@@ -358,7 +406,11 @@ export default function EditProductModal({ open, onClose, productId, initialData
             >
               Hoàn tác
             </button>
-            <button type="submit" disabled={submitting} className="rounded-xl px-5 py-2 bg-green-600 text-white hover:bg-green-700 disabled:opacity-60">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="rounded-xl px-5 py-2 bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+            >
               {submitting ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
           </div>

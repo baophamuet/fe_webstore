@@ -13,7 +13,11 @@ function toCurrency(v) {
   return isNaN(n) ? v : n.toLocaleString("vi-VN") + " ₫";
 }
 function toDate(iso) {
-  try { return new Date(iso).toLocaleString("vi-VN"); } catch { return iso ?? "-"; }
+  try {
+    return new Date(iso).toLocaleString("vi-VN");
+  } catch {
+    return iso ?? "-";
+  }
 }
 function statusLabel(s) {
   const map = {
@@ -37,7 +41,7 @@ function firstImage(images, fallback) {
     if (Array.isArray(images)) return images[0] || fallback;
     if (typeof images === "string") {
       const arr = JSON.parse(images);
-      return Array.isArray(arr) ? (arr[0] || fallback) : fallback;
+      return Array.isArray(arr) ? arr[0] || fallback : fallback;
     }
   } catch (_) {}
   return fallback;
@@ -48,11 +52,12 @@ export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [order, setOrder] = useState(null);           // object order
+  const [order, setOrder] = useState(null); // object order
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
 
-  const defaultImage = "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452";
+  const defaultImage =
+    "https://pos.nvncdn.com/fa2431-2286/ps/20250415_01PEyV81nC.jpeg?v=1744706452";
 
   useEffect(() => {
     window.scrollTo(0, 0); // Cuộn lên đầu trang khi pathname thay đổi
@@ -74,7 +79,8 @@ export default function OrderDetail() {
         const orderObj = json?.data ?? json?.status?.data ?? json;
 
         if (!res.ok) throw new Error(orderObj?.message || `HTTP ${res.status}`);
-        if (!orderObj || typeof orderObj !== "object") throw new Error("Không tìm thấy dữ liệu đơn hàng");
+        if (!orderObj || typeof orderObj !== "object")
+          throw new Error("Không tìm thấy dữ liệu đơn hàng");
 
         setOrder(orderObj);
       } catch (e) {
@@ -115,7 +121,11 @@ export default function OrderDetail() {
   }, [items]);
 
   const handleContact = () => {
-    window.open("https://www.facebook.com/Ladilazy", "_blank", "noopener,noreferrer");
+    window.open(
+      "https://www.facebook.com/Ladilazy",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
   const handleProductDetail = (product_id) => {
     if (!product_id) return;
@@ -124,35 +134,89 @@ export default function OrderDetail() {
 
   // ====== STATES ======
   if (user === null) return <h1>Vui lòng đăng nhập để xem!</h1>;
-  if (loading) return <div className="orderdetail px-8 py-6">Đang tải đơn hàng...</div>;
+  if (loading)
+    return <div className="orderdetail px-8 py-6">Đang tải đơn hàng...</div>;
   if (err) return <div className="orderdetail px-8 py-6">Lỗi: {err}</div>;
-  if (!order) return <div className="orderdetail px-8 py-6">Không tìm thấy đơn hàng.</div>;
-
+  if (!order)
+    return (
+      <div className="orderdetail px-8 py-6">Không tìm thấy đơn hàng.</div>
+    );
+  const onSubmitPayment = async (e) => {
+  const payload = {        
+      total_price: totals.totalPrice,
+    };
+    console.log("Payload being sent to createQR:", payload);
+    try {
+        const payment = await fetch(`${server}/create-payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // gửi cookie JWT, v.v.
+          body: JSON.stringify({
+            ...payload,
+            order_id: order.id, // ID của đơn hàng sau khi tạo bước trước
+          }),
+        });
+        // HTTP lỗi
+    if (!payment.ok) {
+      const text = await payment.text().catch(() => "");
+      console.log(`Lỗi : `);
+      // throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
+    }
+    console.log(`check payment`, payment);
+    const linkpayment = await payment.json();
+    console.log(`Link tạo thanh toán thành công linkpayment`, linkpayment);
+    // tạo cửa số thanh toán cho đơn hàng
+    if (linkpayment?.url) {
+      window.open(linkpayment.url, "_blank", "width=1000,height=800,scrollbars=yes");
+      } else if (typeof linkpayment === "string") {
+      window.open(linkpayment, "_blank", "width=1000,height=800,scrollbars=yes");
+      } else {
+      console.error("Không tìm thấy link thanh toán hợp lệ:", linkpayment);
+    }
+      }catch(err){
+        console.error(err);
+        alert(err.message || "Tạo thanh toán thất bại. Vui lòng thử lại.");
+      }
+}
   // ====== RENDER ======
   return (
     <div className="px-8 py-6 orderdetail">
       <div className="orderdetail__head">
         <div>
           <h1>Thông tin đơn hàng #{orderId}</h1>
+
           <div className="orderdetail__meta">
             <span>Ngày tạo: {toDate(createdAt)}</span>
             <span
               className={`badge ${
-                paymentLabel(order?.payment) === "Đã thanh toán" ? "badge--paid" : "badge--unpaid"
+                paymentLabel(order?.payment) === "Đã thanh toán"
+                  ? "badge--paid"
+                  : "badge--unpaid"
               }`}
             >
               {paymentLabel(order?.payment)}
             </span>
-            <span className="badge badge--outline">{statusLabel(currentStatus)}</span>
+            <span className="badge badge--outline">
+              {statusLabel(currentStatus)}
+            </span>
           </div>
         </div>
+        {paymentLabel(order?.payment) === "Chưa thanh toán"? <button
+          type="button"
+       
+          className="btn btn--ghost"
+          onClick={onSubmitPayment}
+        >
+          Thanh toán ngay
+        </button> : null}
         <IconGoBack />
+        
       </div>
 
       {/* Địa chỉ nhận hàng */}
       <div className="shipping-card">
         <div className="shipping-card__title">Địa chỉ nhận hàng</div>
-        {(shipping?.name || shipping?.phone || shipping?.addressLine) ? (
+        {shipping?.name || shipping?.phone || shipping?.addressLine ? (
           <div className="shipping-card__content">
             <div className="shipping-row">
               <span>Người nhận:</span>
@@ -165,7 +229,12 @@ export default function OrderDetail() {
             <div className="shipping-row">
               <span>Địa chỉ:</span>
               <strong>
-                {[shipping?.addressLine, shipping?.ward, shipping?.district, shipping?.province]
+                {[
+                  shipping?.addressLine,
+                  shipping?.ward,
+                  shipping?.district,
+                  shipping?.province,
+                ]
                   .filter(Boolean)
                   .join(", ") || "-"}
               </strong>
@@ -194,7 +263,10 @@ export default function OrderDetail() {
         ) : (
           <ul className="tracker-steps">
             {STATUS_FLOW.map((step, idx) => {
-              const currentIndex = Math.max(0, STATUS_FLOW.indexOf(currentStatus));
+              const currentIndex = Math.max(
+                0,
+                STATUS_FLOW.indexOf(currentStatus)
+              );
               const isDone = currentIndex > idx;
               const isActive = currentIndex === idx;
               return (
@@ -204,7 +276,9 @@ export default function OrderDetail() {
                     "tracker-step",
                     isDone ? "done" : "",
                     isActive ? "active" : "",
-                  ].join(" ").trim()}
+                  ]
+                    .join(" ")
+                    .trim()}
                 >
                   <div className="tracker-step__dot" />
                   <div className="tracker-step__label">{statusLabel(step)}</div>
@@ -218,7 +292,9 @@ export default function OrderDetail() {
       {/* Danh sách sản phẩm */}
       <div className="order-products">
         {items.length === 0 ? (
-          <div className="order-products__empty">Đơn hàng chưa có sản phẩm.</div>
+          <div className="order-products__empty">
+            Đơn hàng chưa có sản phẩm.
+          </div>
         ) : (
           items.map((it, idx) => {
             const img = firstImage(it?.product?.images, defaultImage);
@@ -233,7 +309,9 @@ export default function OrderDetail() {
                   <img src={img} alt={it?.product?.name || "Sản phẩm"} />
                 </div>
                 <div className="order-product__main">
-                  <div className="order-product__name">{it?.product?.name || "Sản phẩm"}</div>
+                  <div className="order-product__name">
+                    {it?.product?.name || "Sản phẩm"}
+                  </div>
                   <div className="order-product__meta">
                     <span>Số lượng: {it?.quantity}</span>
                     <span>Đơn giá: {toCurrency(it?.price)}</span>
@@ -259,8 +337,12 @@ export default function OrderDetail() {
       </div>
 
       <div className="order-actions">
-        <button className="btn btn--ghost" onClick={handleContact}>Liên hệ hỗ trợ</button>
-        <button className="btn btn--ghost" onClick={() => navigate("/")}>Tiếp tục mua sắm</button>
+        <button className="btn btn--ghost" onClick={handleContact}>
+          Liên hệ hỗ trợ
+        </button>
+        <button className="btn btn--ghost" onClick={() => navigate("/")}>
+          Tiếp tục mua sắm
+        </button>
       </div>
     </div>
   );

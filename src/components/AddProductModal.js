@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import "../styles/AddProductModal.scss"
+import "../styles/AddProductModal.scss";
 // AddProductForm — single-file React component
 // Fields mapped to your Sequelize model:
 // name: STRING, category_id: INTEGER, description: TEXT,
@@ -36,8 +36,12 @@ export function validateFields(form, images) {
 // const [open, setOpen] = useState(false);
 // <AddProductModal open={open} onClose={() => setOpen(false)} onCreated={(p)=>console.log(p)} />
 
-
-export default function AddProductModal({ open, onClose, onCreated,onNotify  }) {
+export default function AddProductModal({
+  open,
+  onClose,
+  onCreated,
+  onNotify,
+}) {
   // Mock categories — replace with API fetch if needed
   const categories = useMemo(
     () => [
@@ -56,15 +60,18 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
     price: "",
     stock: "",
   });
-  const sliderSettings = useMemo(() => ({
-  dots: true,
-  infinite: false,
-  arrows: true,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  adaptiveHeight: true,
-  swipeToSlide: true,
-}), []);
+  const sliderSettings = useMemo(
+    () => ({
+      dots: true,
+      infinite: false,
+      arrows: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      adaptiveHeight: true,
+      swipeToSlide: true,
+    }),
+    []
+  );
   const [images, setImages] = useState([]); // array of File objects
   const [previews, setPreviews] = useState([]); // object URLs for preview
   const [errors, setErrors] = useState({});
@@ -129,40 +136,57 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
 
     try {
       // 👉 Thay URL API của bạn ở đây
-      const res = await fetch(`${server}/product`, 
-        { method: "POST", 
-          credentials: 'include',
-          body: fd });
+      const res = await fetch(`${server}/product`, {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      setResult({ type: "success", message: "Thêm sản phẩm thành công!", data });
-      setForm({ name: "", category_id: "", description: "", price: "", stock: "" });
+      setResult({
+        type: "success",
+        message: "Thêm sản phẩm thành công!",
+        data,
+      });
+      setForm({
+        name: "",
+        category_id: "",
+        description: "",
+        price: "",
+        stock: "",
+      });
       previews.forEach((url) => URL.revokeObjectURL(url));
       setImages([]);
       setPreviews([]);
-        const x = window.scrollX; // vị trí ngang
-        const y = window.scrollY; // vị trí dọc
-        window.location.reload(); // reload trang
-        window.scrollTo(x, y); // quay lại vị trí cũ
+      const x = window.scrollX; // vị trí ngang
+      const y = window.scrollY; // vị trí dọc
+      window.location.reload(); // reload trang
+      window.scrollTo(x, y); // quay lại vị trí cũ
     } catch (err) {
-      setResult({ type: "error", message: `Lỗi khi thêm sản phẩm: ${err.message}` });
+      setResult({
+        type: "error",
+        message: `Lỗi khi thêm sản phẩm: ${err.message}`,
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
- return (
-
+  return (
     <div className="apm-modal">
       <div className="mb-4">
         <h1 className="text-xl font-semibold">Thêm sản phẩm</h1>
-        <p className="text-xs text-gray-500">Nhập đủ thông tin bên dưới và nhấn lưu.</p>
+        <p className="text-xs text-gray-500">
+          Nhập đủ thông tin bên dưới và nhấn lưu.
+        </p>
       </div>
 
       {result && (
         <div
           className={`mb-3 p-3 rounded-xl text-sm ${
-            result.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            result.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
           } font-bold`}
         >
           {result.message}
@@ -175,7 +199,9 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
       >
         {/* Tên */}
         <div>
-          <label className="block text-sm font-medium mb-1">Tên sản phẩm *</label>
+          <label className="block text-sm font-medium mb-1">
+            Tên sản phẩm *
+          </label>
           <input
             name="name"
             type="text"
@@ -184,7 +210,9 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
             placeholder="Ví dụ: Áo thun basic"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
+          {errors.name && (
+            <p className="text-xs text-red-600 mt-1">{errors.name}</p>
+          )}
         </div>
 
         {/* Danh mục */}
@@ -203,7 +231,9 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
               </option>
             ))}
           </select>
-          {errors.category_id && <p className="text-xs text-red-600 mt-1">{errors.category_id}</p>}
+          {errors.category_id && (
+            <p className="text-xs text-red-600 mt-1">{errors.category_id}</p>
+          )}
         </div>
 
         {/* Giá (string) */}
@@ -217,7 +247,9 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
             placeholder="VD: 199000 hoặc 'Liên hệ'"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.price && <p className="text-xs text-red-600 mt-1">{errors.price}</p>}
+          {errors.price && (
+            <p className="text-xs text-red-600 mt-1">{errors.price}</p>
+          )}
         </div>
 
         {/* Tồn kho (int) */}
@@ -232,7 +264,9 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
             placeholder="VD: 100"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.stock && <p className="text-xs text-red-600 mt-1">{errors.stock}</p>}
+          {errors.stock && (
+            <p className="text-xs text-red-600 mt-1">{errors.stock}</p>
+          )}
         </div>
 
         {/* Mô tả (TEXT) */}
@@ -250,7 +284,9 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
 
         {/* Ảnh (chọn nhiều file) */}
         <div>
-          <label className="block text-sm font-medium mb-1">Ảnh sản phẩm *</label>
+          <label className="block text-sm font-medium mb-1">
+            Ảnh sản phẩm *
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -258,41 +294,41 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
             onChange={onPickFiles}
             className="w-full rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.images && <p className="text-xs text-red-600 mt-1">{errors.images}</p>}
+          {errors.images && (
+            <p className="text-xs text-red-600 mt-1">{errors.images}</p>
+          )}
 
           {previews.length > 0 && (
-  <div className="apm-product-image">
-    {previews.length > 1 ? (
-      <Slider {...sliderSettings}>
-        {previews.map((src, idx) => (
-          <div key={idx} className="apm-image-slide">
-            <img src={src} alt={`preview-${idx}`} loading="lazy" />
-            <button
-              type="button"
-              className="apm-remove"
-              onClick={() => removeImage(idx)}
-            >
-              Xóa
-            </button>
-          </div>
-        ))}
-      </Slider>
-    ) : (
-      <div className="apm-image-slide">
-        <img src={previews[0]} alt="preview-0" loading="lazy" />
-        <button
-          type="button"
-          className="apm-remove"
-          onClick={() => removeImage(0)}
-        >
-          Xóa
-        </button>
-      </div>
-    )}
-  </div>
-)}
-
-
+            <div className="apm-product-image">
+              {previews.length > 1 ? (
+                <Slider {...sliderSettings}>
+                  {previews.map((src, idx) => (
+                    <div key={idx} className="apm-image-slide">
+                      <img src={src} alt={`preview-${idx}`} loading="lazy" />
+                      <button
+                        type="button"
+                        className="apm-remove"
+                        onClick={() => removeImage(idx)}
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  ))}
+                </Slider>
+              ) : (
+                <div className="apm-image-slide">
+                  <img src={previews[0]} alt="preview-0" loading="lazy" />
+                  <button
+                    type="button"
+                    className="apm-remove"
+                    onClick={() => removeImage(0)}
+                  >
+                    Xóa
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Actions */}
@@ -308,7 +344,13 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
             <button
               type="button"
               onClick={() => {
-                setForm({ name: "", category_id: "", description: "", price: "", stock: "" });
+                setForm({
+                  name: "",
+                  category_id: "",
+                  description: "",
+                  price: "",
+                  stock: "",
+                });
                 setImages([]);
                 setPreviews([]);
                 setErrors({});
@@ -321,7 +363,6 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
             <button
               type="submit"
               disabled={submitting}
-             
               className="rounded-xl px-5 py-2 bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
             >
               {submitting ? "Đang lưu..." : "Lưu sản phẩm"}
@@ -329,11 +370,6 @@ export default function AddProductModal({ open, onClose, onCreated,onNotify  }) 
           </div>
         </div>
       </form>
-
-
     </div>
-  
-);
-
+  );
 }
-

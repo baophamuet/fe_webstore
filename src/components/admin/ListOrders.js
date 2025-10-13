@@ -1,8 +1,8 @@
 // src/pages/ListOrders.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { useAuth } from "../../routes/AuthContext"; 
+import { useAuth } from "../../routes/AuthContext";
 import "../../styles/ListOrders.scss";
-import IconGoBack from '../IconGoBack';
+import IconGoBack from "../IconGoBack";
 
 //const server = process.env.REACT_APP_API_URL;
 
@@ -63,14 +63,15 @@ export default function ListOrders() {
     setError("");
     try {
       const res = await fetch(`${server}/orders`, {
-            method: "GET", // hoặc không cần ghi vì GET là mặc định
-            credentials: 'include', //  cookie đính kèm
-            headers: {
-              "Content-Type": "application/json"
-            }
+        method: "GET", // hoặc không cần ghi vì GET là mặc định
+        credentials: "include", //  cookie đính kèm
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json?.message || "Không tải được danh sách đơn hàng");
+      if (!res.ok)
+        throw new Error(json?.message || "Không tải được danh sách đơn hàng");
 
       // Kỳ vọng API trả {status: true, data: [...], total: number}
       const list = json?.data || json || [];
@@ -114,28 +115,31 @@ export default function ListOrders() {
 
   function markDirty(id, key, value) {
     setDirtyMap((m) => ({ ...m, [id]: { ...m[id], [key]: value } }));
-    setData((d) => d.map((it) => (it.id === id ? { ...it, [key]: value } : it)));
+    setData((d) =>
+      d.map((it) => (it.id === id ? { ...it, [key]: value } : it))
+    );
   }
 
   function resetRow(id) {
     (async () => {
       try {
-      const res = await fetch(`${server}/orders`, {
-            method: "GET", // hoặc không cần ghi vì GET là mặc định
-            credentials: 'include', //  cookie đính kèm
-            headers: {
-              "Content-Type": "application/json"
-            }
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.message || "Không tải được danh sách đơn hàng");
+        const res = await fetch(`${server}/orders`, {
+          method: "GET", // hoặc không cần ghi vì GET là mặc định
+          credentials: "include", //  cookie đính kèm
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const json = await res.json();
+        if (!res.ok)
+          throw new Error(json?.message || "Không tải được danh sách đơn hàng");
 
-      // Kỳ vọng API trả {status: true, data: [...], total: number}
-      const list = json?.data || json || [];
-      setData(list);
-      setTotal(json?.total ?? list.length);
-      setDirtyMap({});
-    }  catch (e) {
+        // Kỳ vọng API trả {status: true, data: [...], total: number}
+        const list = json?.data || json || [];
+        setData(list);
+        setTotal(json?.total ?? list.length);
+        setDirtyMap({});
+      } catch (e) {
         setToast({ type: "error", text: e.message });
       }
     })();
@@ -206,7 +210,10 @@ export default function ListOrders() {
             ))}
           </select>
 
-          <button className="ordersm__btn ordersm__btn--primary" onClick={applyFilters}>
+          <button
+            className="ordersm__btn ordersm__btn--primary"
+            onClick={applyFilters}
+          >
             Lọc
           </button>
           {hasFilters && (
@@ -263,23 +270,33 @@ export default function ListOrders() {
                 return (
                   <tr
                     key={it.id}
-                    className={dirty ? "ordersm__row ordersm__row--dirty" : "ordersm__row"}
+                    className={
+                      dirty
+                        ? "ordersm__row ordersm__row--dirty"
+                        : "ordersm__row"
+                    }
                   >
                     <td>#{it.id}</td>
                     <td>{toDate(it.created_at)}</td>
-                    <td className="ordersm__name">{it?.user?.name || it?.customer_name || "-"}</td>
+                    <td className="ordersm__name">
+                      {it?.user?.name || it?.customer_name || "-"}
+                    </td>
                     <td>{it.phone || "-"}</td>
                     <td className="ordersm__addr" title={it.address || "-"}>
                       {it.address || "-"}
                     </td>
-                    <td className="ordersm__price">{toCurrency(it.total_price)}</td>
+                    <td className="ordersm__price">
+                      {toCurrency(it.total_price)}
+                    </td>
 
                     <td>
                       <label className="ordersm__switch">
                         <input
                           type="checkbox"
                           checked={!!it.payment}
-                          onChange={(e) => markDirty(it.id, "payment", e.target.checked)}
+                          onChange={(e) =>
+                            markDirty(it.id, "payment", e.target.checked)
+                          }
                         />
                         <span className="ordersm__slider" />
                       </label>
@@ -289,7 +306,9 @@ export default function ListOrders() {
                       <select
                         className="ordersm__cellselect"
                         value={it.paymentmethod || ""}
-                        onChange={(e) => markDirty(it.id, "paymentmethod", e.target.value)}
+                        onChange={(e) =>
+                          markDirty(it.id, "paymentmethod", e.target.value)
+                        }
                       >
                         <option value="">Chọn phương thức</option>
                         {paymentmethodS.map((pm) => (
@@ -304,7 +323,9 @@ export default function ListOrders() {
                       <select
                         className="ordersm__cellselect"
                         value={it.status || "pending"}
-                        onChange={(e) => markDirty(it.id, "status", e.target.value)}
+                        onChange={(e) =>
+                          markDirty(it.id, "status", e.target.value)
+                        }
                       >
                         {ORDER_STATUSES.map((st) => (
                           <option key={st.value} value={st.value}>
@@ -375,7 +396,7 @@ export default function ListOrders() {
 
         <div className="ordersm__total">Tổng {total} đơn</div>
       </div>
-      <IconGoBack/>
+      <IconGoBack />
       {toast && (
         <div
           className={`ordersm__toast ordersm__toast--${toast.type}`}
